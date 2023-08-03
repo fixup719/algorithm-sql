@@ -8,7 +8,6 @@ let line = fs.readFileSync("/dev/stdin").toString().trim().split("\n").slice(1)[
 // 4. 딸기 우유 한 팩
 // 마실 수 있는 최대 우유 개수??
 
-let check = [0, 0, 0];
 let cnt = 0;
 line.map((el, idx) => {
   if(cnt % 3 === el) cnt++;
