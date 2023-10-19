@@ -9,15 +9,17 @@ public class Main {
     static int[] arr;
     static int[] ans;
     static int N, M;
+    static StringBuilder sb = new StringBuilder();;
 
     static void perm(int depth){
 
         if(depth == M){
             // M개를 다 고른 상태이므로,,
+
             for(int i=0; i<depth; i++){
-                System.out.print(ans[i] + " ");
+                sb.append(ans[i] + " ");
             }
-            System.out.println();
+            sb.append("\n");
             return;
         }
 
@@ -50,5 +52,6 @@ public class Main {
         checked = new boolean[N];
         ans = new int[M];
         perm(0);
+        System.out.println(sb);
     }
 }
