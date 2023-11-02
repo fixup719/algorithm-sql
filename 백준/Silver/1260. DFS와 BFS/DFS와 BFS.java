@@ -10,36 +10,36 @@ public class Main {
     static boolean[] visited;
     static StringBuilder sb = new StringBuilder();
 
-    static void dfs(int node){
-        // 첫 노드 방문
-        visited[node] = true;
+    static void dfs(int v){
+        visited[v] = true;
 
-        sb.append(node + " ");
+        sb.append(v + " ");
 
         for(int i=1; i<=N; i++){
-            if(!visited[i] && map[node][i] == 1){
+            if(!visited[i] && map[v][i] == 1){
+                visited[i] = true;
                 dfs(i);
             }
         }
     }
 
-    static void bfs(int node){
+    static void bfs(int v){
+        visited[v] = true;
         Queue<Integer> q = new LinkedList<>();
-        q.offer(node);
-        visited[node] = true;
+        q.offer(v);
 
         while(!q.isEmpty()){
-            int num = q.poll();
-            sb.append(num + " ");
+            int node = q.poll();
+
+            sb.append(node + " ");
 
             for(int i=1; i<=N; i++){
-                if(map[num][i]==1 && !visited[i]){
+                if(!visited[i] && map[node][i]==1){
                     q.offer(i);
                     visited[i] = true;
                 }
             }
         }
-
     }
 
     public static void main(String[] args) throws IOException{
@@ -52,14 +52,13 @@ public class Main {
         V = Integer.parseInt(st.nextToken());
 
         map = new int[N+1][N+1];
-
-        while(M-->0){
+        while(M --> 0){
             st = new StringTokenizer(br.readLine());
-            int from = Integer.parseInt(st.nextToken());
-            int to = Integer.parseInt(st.nextToken());
+            int node1 = Integer.parseInt(st.nextToken());
+            int node2 = Integer.parseInt(st.nextToken());
 
-            map[from][to] = 1;
-            map[to][from] = 1;
+            map[node1][node2]=1;
+            map[node2][node1]=1;
         }
 
         visited = new boolean[N+1];
@@ -71,6 +70,5 @@ public class Main {
         bfs(V);
 
         System.out.println(sb);
-
     }
 }
