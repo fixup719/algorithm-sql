@@ -1,4 +1,3 @@
-
 import java.io.*;
 import java.util.*;
 
@@ -45,7 +44,6 @@ public class Main {
 
         int sum = 0;
         int curL=polls[0].x, curH=polls[0].y;
-        int cnt = 0;
         for(int i=0; i<=maxIdx; i++){
             Poll p = polls[i];
 
@@ -54,8 +52,6 @@ public class Main {
                 curL = p.x;
                 curH = p.y;
             }
-
-            if(p.y==maxH) cnt++;
         }
 
 
