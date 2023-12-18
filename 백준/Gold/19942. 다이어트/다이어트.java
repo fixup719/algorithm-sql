@@ -9,52 +9,55 @@ public class Main {
     static int M = 1; // 몇 개의 재료를 선택할 지
     static int[] minNutrients; // 최소 영양성분
     static int[][] foods; // 식재료 정보 담을 배열
-    static int[] peek;
-    static int ansCost = 500*15+1;
-    static Set<String> set = new HashSet<>();
+    static int[] peek; // 선택한 식재료 번호 담을 배열
+    static int ansCost = Integer.MAX_VALUE; // 최소 비용
+    static List<String> ansList = new ArrayList<>(); // 최소 비용이 되는 재료집합 후보들
+
+    static boolean isAble(){
+        boolean check = true;
+
+        // 재료 영양성분 합계 입력할 배열 선언
+        int[] sumNutrients = new int[4];
+        for(int i=0; i<M; i++){
+            for(int j=0; j<4; j++){
+                sumNutrients[j] += foods[peek[i]][j];
+            }
+        }
+
+        // 최소 기준 충족하는지 체크
+        for(int i=0; i<4; i++){
+            if(sumNutrients[i] < minNutrients[i]){
+                check = false;
+                break;
+            }
+        }
+        return check;
+    }
 
     static void comb(int depth, int start){
         if(depth == M){
+            if(isAble()){
 
-            int[] sumNutrients = new int[4];
-            for(int i=0; i<M; i++){
-                for(int j=0; j<4; j++){
-                    sumNutrients[j] += foods[peek[i]][j];
-                }
-            }
-
-            boolean check = true;
-            for(int i=0; i<4; i++){
-                if(sumNutrients[i] < minNutrients[i]){
-                    check = false;
-                    break;
-                }
-            }
-
-
-
-            if(check){
+                // 비용 합계 구하기
                 int cost = 0;
                 for(int i=0; i<M; i++){
                     cost += foods[peek[i]][4];
                 }
 
-                if(ansCost > cost){
+
+                if(ansCost >= cost){
+                    if(ansCost>cost){
+                        // 최소 비용 갱신하는 경우 => 기존 후보군들 제거
+                        ansList.clear();
+                    }
+                    // 후보군 추가
                     ansCost = cost;
                     String ansPeek = "";
                     for (int el : peek) {
-                        ansPeek += String.valueOf(el+1)+" ";
+                        ansPeek += (el+1)+" ";
                     }
-                    set.clear();
-                    set.add(ansPeek);
-                }
 
-                if(ansCost == cost){
-                    String ansPeek = "";
-                    for (int el : peek) {
-                        ansPeek += String.valueOf(el+1)+" ";
-                    }
-                    set.add(ansPeek);
+                    ansList.add(ansPeek);
                 }
             }
 
@@ -62,7 +65,6 @@ public class Main {
         }
 
         for(int i=start; i<N; i++){
-
             peek[depth] = i;
             comb(depth+1, i+1);
         }
@@ -91,22 +93,19 @@ public class Main {
             }
         }
 
+        // 1부터 N개까지 선택 NC1 ~ NCN
         while(M<=N){
             peek = new int[M];
             comb(0,0);
             M++;
         }
 
-        if(ansCost==(500*15+1)){
+        if(ansList.size()==0){
             System.out.println(-1);
         }else{
             System.out.println(ansCost);
-
-            List<String> keySet = new ArrayList<>(set);
-
-            Collections.sort(keySet);
-            System.out.println(keySet.get(0));
-
+            Collections.sort(ansList);
+            System.out.println(ansList.get(0));
         }
     }
 }
