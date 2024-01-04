@@ -1,45 +1,45 @@
-
-
-
 import java.io.*;
-import java.util.*;
+import java.util.StringTokenizer;
 
 public class Main {
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
         int N = Integer.parseInt(br.readLine());
 
-        int[] timeline = new int[1001];
-        int[][] logs = new int[N][2];
-        boolean[] visit = new boolean[1001];
-        int totalTime = 0;
-        for(int t=0; t<N; t++){
+        int[][] rescures = new int[N][2];
+        int[] time = new int[1001];
+        int total = 0;
+        for(int i=0; i<N; i++){
             st = new StringTokenizer(br.readLine());
             int start = Integer.parseInt(st.nextToken());
             int end = Integer.parseInt(st.nextToken());
 
-            logs[t][0] = start;
-            logs[t][1] = end;
-            for(int i=start; i<end; i++){
-                timeline[i]++;
-                if(!visit[i]){
-                    visit[i] = true;
-                    totalTime++;
-                }
+            rescures[i][0] = start;
+            rescures[i][1] = end;
+
+            for(int j=start; j<end; j++){
+                if(time[j]==0)  total++;
+                time[j]++;
             }
         }
 
-        int minTime = Integer.MAX_VALUE;
+        int coverTime = 1000;
         for(int i=0; i<N; i++){
-            int tmp =0;
-            for(int j=logs[i][0]; j<logs[i][1]; j++){
-                if(timeline[j] == 1) tmp++;
+            int start = rescures[i][0];
+            int end = rescures[i][1];
+
+            int tmpTime = 0;
+            for(int j=start; j<end; j++){
+                if(time[j]<2) tmpTime++;
             }
-            minTime = Math.min(tmp, minTime);
+
+            coverTime = Math.min(coverTime, tmpTime);
         }
 
-        System.out.println(totalTime-minTime);
+        System.out.println(total-coverTime);
+
     }
 }
