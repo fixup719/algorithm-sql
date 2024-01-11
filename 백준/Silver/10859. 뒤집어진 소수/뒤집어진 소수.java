@@ -1,59 +1,54 @@
-
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class Main {
 
-    static boolean isPrime(long num){
+    static boolean isPrime(long number){
 
-        if(num == 1) return false;
-        for(long k=2; k*k <= num; k++){
-            if(num % k == 0){
-                return false;
+        if (number == 1) return false;
+
+        long cnt = 0;
+        for (long i = 2; i * i < number + 1; i++) {
+            if (number % i == 0) {
+                cnt++;
             }
         }
-        return true;
 
+        if ( cnt == 0 ) return true;
+        else return false;
     }
 
-    static boolean check(long num){
-        while(num>0){
-            long tmp = num%10;
-
-            if(tmp==3 || tmp==4 || tmp==7){
-                return false;
-            }
-
-            num/=10;
-        }
-        return true;
-    }
-
-    static long onFlip(long num){
-        long ans = 0;
-        while(num>0){
-            if(num%10 == 6) ans = ans*10 + 9;
-            else if(num%10 == 9) ans = ans*10 + 6;
-            else ans = ans*10 + num%10;
-            num /= 10;
-        }
-        return ans;
-    }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        Long num = Long.parseLong(br.readLine());
 
-        if(!isPrime(num)){
-            System.out.println("no");
-        }else{
-            if(!check(num)){
+        long N = Long.parseLong(br.readLine());
+
+        long tmp = N;
+        int value = 0, digit = 0; // 자릿값, 자릿수
+        ArrayList<Integer> values = new ArrayList<>();
+        while (tmp > 0) {
+            value = (int) (tmp % 10);
+
+            if (value == 3 || value == 4 || value == 7) {
                 System.out.println("no");
-            }else {
-                long reversedNum = onFlip(num);
-                if(!isPrime(reversedNum)) System.out.println("no");
-                else System.out.println("yes");
-            }
+                System.exit(0);
+            }else if (value == 6) values.add(9);
+            else if (value == 9) values.add(6);
+            else values.add(value);
+
+            tmp /= 10;
+            digit++;
         }
+
+        long reverseN = 0;
+        for (int i = 0; i < values.size(); i++) {
+            reverseN += values.get(i) * Math.pow(10, --digit);
+        }
+
+        if(isPrime(N) && isPrime(reverseN)) System.out.println("yes");
+        else System.out.println("no");
     }
 }
