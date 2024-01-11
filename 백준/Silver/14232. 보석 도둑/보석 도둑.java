@@ -1,37 +1,30 @@
-
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class Main {
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         long K = Long.parseLong(br.readLine());
-        long sqrtK = (long)Math.sqrt(K);
 
-        long i=2;
-        ArrayList<Long> list = new ArrayList<>();
-        while(K>1){
-
-            if(i>sqrtK+1){
-                list.add(K);
-                break;
-            }
-
-            if(K%i == 0){
-                list.add(i);
-                K /= i;
-            }else{
-                i++;
+        // 소인수분해
+        ArrayList<Long> jewels = new ArrayList<>();
+        long tmp = K;
+        for(long i=2; i * i < K + 1; i++){
+            while( tmp % i == 0) {
+                jewels.add(i);
+                tmp /= i;
             }
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(list.size()+"\n");
-        for(Long x : list){
-            sb.append(x+" ");
-        }
-        System.out.println(sb);
+        if(tmp != 1) jewels.add(tmp);
 
+        System.out.println(jewels.size());
+        for (Long x : jewels){
+            System.out.print(x + " ");
+        }
 
     }
 }
