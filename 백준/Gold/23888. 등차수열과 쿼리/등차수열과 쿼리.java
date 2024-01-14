@@ -5,13 +5,14 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    static long func1(int a1, int d, int l, int r){
-        int n = r - l + 1;
+    static long func1(long a1, long d, long l, long r){
+        long n = r - l + 1;
         long al = a1 + (l - 1) * d;
+
         return n * (2 * al + (n - 1) * d) / 2;
     }
 
-    static long func2(int a1, int d, int l, int r){
+    static long func2(long a1, long d, long l, long r){
         long answer = 0;
 
         if(l == r || d == 0){
@@ -20,7 +21,8 @@ public class Main {
             answer = d;
         }else {
             // (첫항 - 공차)와 공차의 최대 공약수 구해야함
-            int tmp = 0, a = Math.abs(a1 - d), b = d;
+            long tmp = 0;
+            long a = Math.abs(a1 - d), b = d;
             while (b != 0) {
                 tmp = a % b;
                 a = b;
@@ -39,16 +41,17 @@ public class Main {
         StringTokenizer st;
 
         st = new StringTokenizer(br.readLine());
-        int a1 = Integer.parseInt(st.nextToken());
-        int d = Integer.parseInt(st.nextToken());
+        long a1 = Long.parseLong(st.nextToken());
+        long d = Long.parseLong(st.nextToken());
 
         int q = Integer.parseInt(br.readLine());
-        int type, l, r;
+        int type;
+        long l, r;
         while (q-- > 0) {
             st = new StringTokenizer(br.readLine());
             type = Integer.parseInt(st.nextToken());
-            l = Integer.parseInt(st.nextToken());
-            r = Integer.parseInt(st.nextToken());
+            l = Long.parseLong(st.nextToken());
+            r = Long.parseLong(st.nextToken());
 
             if(type==1){
                 sb.append(func1(a1, d, l, r) + "\n");
