@@ -28,11 +28,11 @@ public class Main {
             nums[i] = Long.parseLong(st.nextToken());
         }
 
-        Arrays.sort(nums);
+//        Arrays.sort(nums);
 
         long[] diff = new long[N-1];
         for (int i = 0; i < N-1; i++) {
-            diff[i] = nums[i + 1] - nums[i];
+            diff[i] = Math.abs(nums[i + 1] - nums[i]);
         }
 
         long[] LtoR = new long[N-1];
