@@ -17,26 +17,16 @@ public class Main {
         int[] ans = {values[s], values[e]};
         while (s < e) {
             sum = values[s] + values[e];
-
-            if (sum == 0) {
-                ans[0] = values[s];
-                ans[1] = values[e];
-                break;
-            }
-
+            
             if (Math.abs(sum) < Math.abs(minDiff)) {
                 minDiff = sum;
                 ans[0] = values[s];
                 ans[1] = values[e];
-                if(sum < 0) s++;
-                else e--;
-            } else if (Math.abs(sum) > Math.abs(minDiff)) {
-                if(sum < 0) s++;
-                else e--;
-            } else {
-                if(sum < 0) s++;
-                else e--;
-            }
+                if (sum == 0) break;
+            } 
+
+            if(sum < 0) s++;
+            else e--;
         }
 
         System.out.println(ans[0] + " " + ans[1]);
