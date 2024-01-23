@@ -18,7 +18,7 @@ public class Main {
         }
 
         int s = 0, e = 0, sum = arr[0], answer = Integer.MAX_VALUE;
-        while (s <= e && e < N) {
+        while (e < N) {
 
             if (sum < S) {
                 e++;
