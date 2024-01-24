@@ -41,13 +41,14 @@ public class Main {
                e--;
             } else {
                 sCnt = 1;
-                while (s + 1 < n * n && sumArr1[s] == sumArr1[s + 1]) {
+                while (s + 1 < n * n && sumArr1[s + 1] + sumArr2[e] == 0) {
                     sCnt++;
                     s++;
                 }
+                s++;
 
                 eCnt = 1;
-                while (0 <= e - 1 && sumArr2[e] == sumArr2[e - 1]) {
+                while (0 <= e - 1 && sumArr1[s - 1] + sumArr2[e - 1] == 0) {
                     eCnt++;
                     e--;
                 }
