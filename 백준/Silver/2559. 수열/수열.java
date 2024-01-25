@@ -12,14 +12,24 @@ public class Main {
         int K = Integer.parseInt(st.nextToken());
 
         st = new StringTokenizer(br.readLine());
-        int[] arr = new int[N + 1];
+        int[] arr = new int[N + 2];
         for (int i = 1; i <= N; i++) {
-            arr[i] = arr[i-1] + Integer.parseInt(st.nextToken());
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
         int answer = Integer.MIN_VALUE;
-        for (int i = 1; i <= N - K + 1; i++) {
-            answer = Math.max(answer, arr[i + K - 1] - arr[i - 1]);
+        int s = 1, e = K, sum = 0;
+        for (int i = s; i <= e ; i++) {
+            sum += arr[i];
+        }
+        while (e <= N) {
+            answer = Math.max(answer, sum);
+
+            e++;
+            sum += arr[e];
+
+            sum -= arr[s];
+            s++;
         }
 
         bw.write(String.valueOf(answer));
