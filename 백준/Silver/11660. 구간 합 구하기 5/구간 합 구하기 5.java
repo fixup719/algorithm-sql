@@ -1,49 +1,40 @@
-
-
 import java.io.*;
 import java.util.*;
-
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st;
 
         st = new StringTokenizer(br.readLine());
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
 
-        int[][] map = new int[N][N];
-        int sum;
-        // 입력 받으면서 누적합 배열 만들기
-        for(int i=0; i<N; i++){
+        int[][] arr = new int[N + 1][N + 1];
+        for (int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
-            sum=0;
-            for(int j=0; j<N; j++){
-                sum += Integer.parseInt(st.nextToken());
-                map[i][j] = sum;
+            for (int j = 1; j <= N; j++) {
+                arr[i][j] = arr[i - 1][j] + arr[i][j - 1] - arr[i - 1][j - 1] + Integer.parseInt(st.nextToken());
             }
         }
 
         StringBuilder sb = new StringBuilder();
-        while(M-->0){
+        int x1, y1, x2, y2;
+        for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
+            x1 = Integer.parseInt(st.nextToken());
+            y1 = Integer.parseInt(st.nextToken());
+            x2 = Integer.parseInt(st.nextToken());
+            y2 = Integer.parseInt(st.nextToken());
 
-            int x1 = Integer.parseInt(st.nextToken())-1;
-            int y1 = Integer.parseInt(st.nextToken())-1;
-            int x2 = Integer.parseInt(st.nextToken())-1;
-            int y2 = Integer.parseInt(st.nextToken())-1;
-
-
-            int ans = 0;
-            for(int i=x1; i<=x2; i++){
-                if(y1>0) ans += map[i][y2] - map[i][y1-1];
-                else ans += map[i][y2];
-            }
-
-            sb.append(ans + "\n");
+            sb.append(arr[x2][y2] - arr[x1 - 1][y2] - arr[x2][y1 - 1] + arr[x1 - 1][y1 - 1] + "\n");
         }
 
-        System.out.println(sb);
+
+        bw.write(String.valueOf(sb));
+        bw.flush();
+        bw.close();
+        br.close();
     }
 }
