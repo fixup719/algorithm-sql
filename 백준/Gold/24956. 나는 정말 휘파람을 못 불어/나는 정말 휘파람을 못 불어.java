@@ -11,8 +11,8 @@ public class Main {
         final int MOD = 1000000007;
 
         String S = br.readLine();
-        long[] accW = new long[N + 1];
-        long[] accE = new long[N + 1];
+        int[] accW = new int[N + 1];
+        int[] accE = new int[N + 1];
         long[] subset = new long[N + 1];
         for (int i = 1; i <= N; i++) {
 
@@ -22,20 +22,15 @@ public class Main {
             if(S.charAt(i-1) == 'W') accW[i] = (accW[i - 1] + 1) % MOD;
             else if(S.charAt(i-1) == 'E'){
                 accE[i] = (accE[i - 1] + 1) % MOD;
-                subset[(int)accE[i]] = subset[(int)accE[i - 1]] * 2 % MOD + accE[i - 1] % MOD;
+                subset[accE[i]] = subset[accE[i - 1]] * 2 % MOD + accE[i - 1] % MOD;
             }
 
         }
-
-//        System.out.println(Arrays.toString(accW));
-//        System.out.println(Arrays.toString(accE));
-//        System.out.println(Arrays.toString(subset));
 
         long answer = 0;
         for (int i = 1; i <= N; i++) {
             if (S.charAt(i - 1) == 'H') {
                 answer += accW[i] * (subset[(int)accE[N] - (int)accE[i]]);
-//                System.out.println(answer);
             }
         }
         bw.write(String.valueOf(answer % MOD));
