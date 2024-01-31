@@ -1,12 +1,11 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.io.*;
+import java.util.StringTokenizer;
+
 
 public class Main {
 
-    static long getGcd(long a, long b) {
-        // a > b 일 것
+    public static long getGcd(long a, long b) {
+        // a > b
         long tmp;
         while (b != 0) {
             tmp = a % b;
@@ -19,73 +18,58 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         int N = Integer.parseInt(br.readLine());
 
-        long[] nums = new long[N];
+        long[] arr = new long[N];
         StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
-            nums[i] = Long.parseLong(st.nextToken());
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
-//        Arrays.sort(nums);
-
-        long[] diff = new long[N-1];
-        for (int i = 0; i < N-1; i++) {
-            diff[i] = Math.abs(nums[i + 1] - nums[i]);
+        long[] prefix = new long[N];
+        prefix[0] = arr[0];
+        for (int i = 1; i < N; i++) {
+            prefix[i] = getGcd(Math.max(arr[i], prefix[i - 1]), Math.min(arr[i], prefix[i - 1]));
         }
 
-        long[] LtoR = new long[N-1];
-        long[] RtoL = new long[N-1];
-
-        long gcd = diff[0];
-        LtoR[0] = gcd;
-        for (int i = 0; i < N - 1; i++) {
-            gcd = getGcd(Math.max(gcd, diff[i]), Math.min(gcd, diff[i]));
-            LtoR[i] = gcd;
+        long[] suffix = new long[N];
+        suffix[N - 1] = arr[N - 1];
+        for (int i = N - 2; i >= 0; i--) {
+            suffix[i] = getGcd(Math.max(arr[i], suffix[i + 1]), Math.min(arr[i], suffix[i + 1]));
         }
 
-        gcd = diff[N-2];
-        RtoL[N-2] = gcd;
-        for (int i = N-2; i >= 0; i--) {
-            gcd = getGcd(Math.max(gcd, diff[i]), Math.min(gcd, diff[i]));
-            RtoL[i] = gcd;
-        }
 
-        long ansGcd = -1, ansK = 0, tmpGcd, newDiff;
-        for (int k = 0; k < N; k++) {
-            if (k == 0) {
-                tmpGcd = RtoL[k + 1];
-            } else if (k == N - 1) {
-                tmpGcd = LtoR[k - 2];
+        long k, answer = -1, delK = -1, gcd;
+        for (int i = 0; i < N; i++) {
+            k = arr[i];
+
+            if (0 <= i - 1 && i + 1 < N) {
+                gcd = getGcd(Math.max(prefix[i - 1], suffix[i + 1])
+                        ,Math.min(prefix[i - 1], suffix[i + 1]));
+            } else if (i == 0) {
+                gcd = suffix[i + 1];
             } else {
-                newDiff = diff[k - 1] + diff[k];
-                if (k - 2 < 0) {
-                    tmpGcd = getGcd(Math.max(newDiff, RtoL[k + 1]), Math.min(newDiff, RtoL[k + 1]));
-                } else if (N - 2 < k + 1) {
-                    tmpGcd = getGcd(Math.max(newDiff, LtoR[k - 2]), Math.min(newDiff, LtoR[k - 2]));
-                } else {
-                    tmpGcd = getGcd(Math.max(LtoR[k - 2], RtoL[k + 1]), Math.min(LtoR[k - 2], RtoL[k + 1]));
-                    tmpGcd = getGcd(Math.max(newDiff, tmpGcd), Math.min(newDiff, tmpGcd));
-                }
+                gcd = prefix[i - 1];
             }
 
-//            System.out.println(nums[k] + " " + tmpGcd);
-
-            if (nums[k] % tmpGcd != 0) {
-                if (ansGcd <= tmpGcd) {
-                    ansK = nums[k];
-                    ansGcd = tmpGcd;
+            if (k % gcd != 0) {
+                if (answer < gcd) {
+                    answer = gcd;
+                    delK = k;
                 }
             }
         }
 
-        if (ansGcd != -1) {
-            System.out.println(ansGcd + " " + ansK);
+        if (answer != -1) {
+            bw.write(String.valueOf(answer + " " + delK));
         } else {
-            System.out.println(ansGcd);
+            bw.write(String.valueOf(answer));
         }
 
-
+        bw.flush();
+        bw.close();
+        br.close();
     }
 }
