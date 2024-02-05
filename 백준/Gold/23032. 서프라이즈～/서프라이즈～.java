@@ -1,45 +1,65 @@
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
+
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static int N;
+    static int[] grams;
+    static int answer = Integer.MAX_VALUE;
+    static int ansGram = 0;
 
-        int N = Integer.parseInt(br.readLine());
-        int[] acc = new int[N + 1];
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 1; i <= N; i++) {
-            acc[i] = Integer.parseInt(st.nextToken()) + acc[i-1];
-        }
+    static int binarySearch(int s, int e, int[] arr) {
 
-        int p = 0, diff = 0, sum = 0, ansSum = 0, ansDiff = Integer.MAX_VALUE, beforeDiff = 0;
-        for (int i = 1; i <= N-1; i++) {
-            for (int j = i + 1; j <= N; j++) {
-                p = j - 1;
-                beforeDiff = Integer.MAX_VALUE;
+        int start = s, end = e;
+        int mid, group1, group2, diff;
+        while (s <= e) {
+            mid = (s + e) / 2;
 
-                while (p >= 0) {
-                    diff = Math.abs((acc[p]-acc[i-1]) - (acc[j] - acc[p]));
-                    sum = acc[j] - acc[i-1];
+            group1 = grams[mid] - grams[start - 1];
+            group2 = grams[end] - grams[mid];
 
-                    if(beforeDiff < diff) break;
+            if(group1 > group2){
+                e = mid - 1;
+            } else{
+                s = mid + 1;
+            }
 
-                    if (ansDiff > diff){
-                        ansDiff = diff;
-                        ansSum = sum;
-                    }else if (ansDiff == diff) {
-                        if (ansSum < sum) ansSum = sum;
-                    }
+            diff = Math.abs(group1 - group2);
 
-                    p -= 1;
-                    beforeDiff = diff;
+            if (answer > diff) {
+                answer = diff;
+                ansGram = group1 + group2;
+            } else if (answer == diff) {
+                if (ansGram < group1 + group2) {
+                    ansGram = group1 + group2;
                 }
-
             }
         }
 
-        bw.write(String.valueOf(ansSum));
+        return answer;
+    }
+
+    public static void main(String[] args) throws  IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        N = Integer.parseInt(br.readLine());
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        grams = new int[N + 1];
+        for (int i = 1; i <= N; i++) {
+            grams[i] = grams[i - 1] + Integer.parseInt(st.nextToken());
+        }
+
+        // 대상 그룹 시작 인덱스 선택
+        for (int i = 1; i <= N - 1; i++) {
+            // 대상 그룹 끝 인덱스 선택(2명이상 N명이하)
+            for (int j = i+1; j <= N; j++) {
+                binarySearch(i, j, grams);
+            }
+        }
+
+        bw.write(String.valueOf(ansGram));
         bw.flush();
         bw.close();
         br.close();
