@@ -1,53 +1,53 @@
-
-
 import java.io.*;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
+
 
 public class Main {
-    static int K,N;
-    static int[] lans;
+    static int K, N;
+    static int max = 0;
+    static int[] arr;
+    static long answer = 0;
 
-    static long cutLans(){
-        long cnt = 0;
-        long maxLength = 1;
-        long left = 1, right = lans[K-1];
+    static void binarySearch(long s, long e) {
+        long mid;
+        int cnt;
+        while (s <= e) {
+            mid = (s + e) / 2;
 
-        while(left <= right){
-            long mid = (left+right)/2;
-
-            for(int i=0; i<K; i++){
-                cnt += lans[i]/mid;
-            }
-
-            if(cnt >= N){
-                // 길이를 늘려도 됨
-                maxLength = Math.max(maxLength, mid);
-                left = mid+1;
-            }else{
-                // 길이를 줄여야함
-                right = mid-1;
-            }
             cnt = 0;
-        }
+            for (int i = 0; i < K; i++) {
+                cnt += arr[i] / (int)mid;
+            }
 
-        return maxLength;
+            if (cnt >= N) {
+                answer = Math.max(answer, mid);
+                s = mid + 1;
+            } else {
+                e = mid - 1;
+            }
+        }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws  IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        st = new StringTokenizer(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
         K = Integer.parseInt(st.nextToken());
         N = Integer.parseInt(st.nextToken());
 
-        lans = new int[K];
-        for(int i=0; i<K; i++){
-            lans[i] = Integer.parseInt(br.readLine());
+        arr = new int[K];
+        for (int i = 0; i < K; i++) {
+            arr[i] = Integer.parseInt(br.readLine());
+            max = Math.max(max, arr[i]);
         }
-        Arrays.sort(lans);
-        System.out.println(cutLans());
 
+        binarySearch(1, max);
+
+
+        bw.write(String.valueOf(answer));
+        bw.flush();
+        bw.close();
+        br.close();
     }
 }
