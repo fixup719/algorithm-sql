@@ -5,18 +5,18 @@ import java.util.Arrays;
 
 public class Main {
     static int N, K;
-    static long[] A;
-    static long[] B;
+    static int[] A;
+    static int[] B;
     static long answer;
 
     // 나보다 큰 값중 가장 왼쪽에 있는 것의 인덱스
-    static long upperbound(long s, long e, long target, long mul) {
-        long answer = N;
-        long mid;
+    static int upperbound(int s, int e, long target, int mul) {
+        int answer = N;
+        int mid;
         while (s <= e) {
             mid = (s + e) / 2;
 
-            if (B[(int)mid] * mul > target) {
+            if ((long)B[mid] * mul > target) {
                 answer = mid;
                 e = mid - 1;
             } else {
@@ -28,7 +28,7 @@ public class Main {
 
     static void binarySearch(long s, long e) {
         long mid;
-        long cnt;
+        int cnt;
         while (s <= e) {
             mid = (s + e) / 2;
 
@@ -55,22 +55,22 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
 
-        A = new long[N];
+        A = new int[N];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
-            A[i] = Long.parseLong(st.nextToken());
+            A[i] = Integer.parseInt(st.nextToken());
         }
 
-        B = new long[N];
+        B = new int[N];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
-            B[i] = Long.parseLong(st.nextToken());
+            B[i] = Integer.parseInt(st.nextToken());
         }
 
         Arrays.sort(A);
         Arrays.sort(B);
 
-        binarySearch(A[0] * B[0], A[N - 1] * B[N - 1]);
+        binarySearch((long)A[0] * B[0], (long)A[N - 1] * B[N - 1]);
 
         bw.write(String.valueOf(answer));
 
