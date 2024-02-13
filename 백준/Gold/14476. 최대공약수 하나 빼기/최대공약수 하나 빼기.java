@@ -1,11 +1,11 @@
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 public class Main {
 
-    public static int getGcd(int a, int b) {
-        // a > b
+    static int getGCD(int a, int b) {
+
         int tmp;
         while (b != 0) {
             tmp = a % b;
@@ -16,56 +16,42 @@ public class Main {
         return a;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws  IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         int N = Integer.parseInt(br.readLine());
 
-        int[] arr = new int[N];
+        int[] arr = new int[N + 1];
         StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) {
+        for (int i = 1; i <= N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        int[] prefix = new int[N];
-        prefix[0] = arr[0];
-        for (int i = 1; i < N; i++) {
-            prefix[i] = getGcd(Math.max(arr[i], prefix[i - 1]), Math.min(arr[i], prefix[i - 1]));
+        int[] prefix = new int[N + 1];
+        for (int i = 1; i <= N; i++) {
+            prefix[i] = getGCD(Math.max(prefix[i - 1], arr[i]), Math.min(prefix[i - 1], arr[i]));
         }
 
-        int[] suffix = new int[N];
-        suffix[N - 1] = arr[N - 1];
-        for (int i = N - 2; i >= 0; i--) {
-            suffix[i] = getGcd(Math.max(arr[i], suffix[i + 1]), Math.min(arr[i], suffix[i + 1]));
+        int[] suffix = new int[N + 2];
+        for (int i = N; i >= 1; i--) {
+            suffix[i] = getGCD(Math.max(suffix[i + 1], arr[i]), Math.min(suffix[i + 1], arr[i]));
         }
 
-
-        int k, answer = -1, delK = -1, gcd;
-        for (int i = 0; i < N; i++) {
+        int k, gcd, ansGcd = -1, ansK = 0;
+        for (int i = 1; i <= N; i++) {
             k = arr[i];
-
-            if (0 <= i - 1 && i + 1 < N) {
-                gcd = getGcd(Math.max(prefix[i - 1], suffix[i + 1])
-                        ,Math.min(prefix[i - 1], suffix[i + 1]));
-            } else if (i == 0) {
-                gcd = suffix[i + 1];
-            } else {
-                gcd = prefix[i - 1];
-            }
-
+            gcd = getGCD(Math.max(prefix[i - 1], suffix[i + 1]), Math.min(prefix[i - 1], suffix[i + 1]));
             if (k % gcd != 0) {
-                if (answer < gcd) {
-                    answer = gcd;
-                    delK = k;
-                }
+                ansGcd = Math.max(ansGcd, gcd);
+                ansK = k;
             }
         }
 
-        if (answer != -1) {
-            bw.write(String.valueOf(answer + " " + delK));
+        if (ansGcd != -1) {
+            bw.write(String.valueOf(ansGcd + " " + ansK));
         } else {
-            bw.write(String.valueOf(answer));
+            bw.write(String.valueOf(ansGcd));
         }
 
         bw.flush();
