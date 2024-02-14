@@ -1,73 +1,57 @@
 import java.io.*;
-import java.util.StringTokenizer;
-
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws  IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringBuilder sb = new StringBuilder();
+
+        int N = Integer.parseInt(br.readLine());
         StringTokenizer st;
-
-        int n = Integer.parseInt(br.readLine());
-
-        int[][] arr = new int[n][2];
-        for (int i = 0; i < n; i++) {
+        int[][] arr = new int[N][2];
+        for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             arr[i][0] = Integer.parseInt(st.nextToken()) + 500000;
             arr[i][1] = Integer.parseInt(st.nextToken()) + 500000;
         }
 
+        // x좌표 변화 기록
         int[] prefixX = new int[1000010];
-        for (int i = 1; i < n; i++) {
-            if (arr[i - 1][0] < arr[i][0]) {
-                prefixX[arr[i - 1][0]] += 1;
-                prefixX[arr[i][0]] += -1;
-            } else if (arr[i - 1][0] > arr[i][0]) {
-                prefixX[arr[i - 1][0]] += -1;
-                prefixX[arr[i][0]] += 1;
-            }
-        }
-        // 첫번쨰랑 마지막 꼭짓점 연결하는 부분 추가!
-        if (arr[0][0] < arr[n - 1][0]) {
-            prefixX[arr[0][0]] += 1;
-            prefixX[arr[n - 1][0]] += -1;
-        } else if (arr[0][0] > arr[n - 1][0]) {
-            prefixX[arr[0][0]] += -1;
-            prefixX[arr[n - 1][0]] += 1;
-        }
-
+        // y좌표 변화 기록
         int[] prefixY = new int[1000010];
-        for (int i = 1; i < n; i++) {
-            if (arr[i - 1][1] < arr[i][1]) {
-                prefixY[arr[i - 1][1]] += 1;
-                prefixY[arr[i][1]] += -1;
-            } else if (arr[i - 1][1] > arr[i][1]) {
-                prefixY[arr[i - 1][1]] += -1;
-                prefixY[arr[i][1]] += 1;
+
+        int x1, x2, y1, y2;
+        for (int i = 0; i < N; i++) {
+            // 첫 좌표 ~ 마지막좌표 잇기
+            x1 = arr[i][0];
+            y1 = arr[i][1];
+            if (i == N - 1) {
+                x2 = arr[0][0];
+                y2 = arr[0][1];
+            } else {
+                x2 = arr[i + 1][0];
+                y2 = arr[i + 1][1];
+            }
+            if (x1 != x2) {
+                prefixX[Math.min(x1, x2)] += 1;
+                prefixX[Math.max(x1, x2)] += -1;
+            } else {
+                prefixY[Math.min(y1, y2)] += 1;
+                prefixY[Math.max(y1, y2)] += -1;
             }
         }
-        // 첫번쨰랑 마지막 꼭짓점 연결하는 부분 추가!
-        if (arr[0][1] < arr[n - 1][1]) {
-            prefixY[arr[0][1]] += 1;
-            prefixY[arr[n - 1][1]] += -1;
-        } else if (arr[0][1] > arr[n - 1][1]) {
-            prefixY[arr[0][1]] += -1;
-            prefixY[arr[n - 1][1]] += 1;
-        }
 
-        int xMax = 0;
-        for (int i = 1; i < 1000010; i++) {
+        int h = 0, v = 0;
+        for (int i = 1; i < 1000010 ; i++) {
             prefixX[i] += prefixX[i - 1];
-            if(xMax < prefixX[i]) xMax = prefixX[i];
-        }
-
-        int yMax = 0;
-        for (int i = 1; i < 1000010; i++) {
             prefixY[i] += prefixY[i - 1];
-            if(yMax < prefixY[i]) yMax = prefixY[i];
+
+            h = Math.max(h, prefixX[i]);
+            v = Math.max(v, prefixY[i]);
         }
 
-        bw.write(String.valueOf(Math.max(xMax, yMax)));
+        bw.write(String.valueOf(Math.max(h, v)));
         bw.flush();
         bw.close();
         br.close();
