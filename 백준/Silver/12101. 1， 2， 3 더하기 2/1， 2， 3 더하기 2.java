@@ -1,57 +1,55 @@
-
-
 import java.io.*;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int N, K;
+    static int N, K, cnt;
     static int[] arr;
-    static int cnt = 0;
-    static String answer = null;
+    static StringBuilder sb = new StringBuilder();
 
-    static void dfs(int depth, int sum){
-        if(sum == N){
+    static void recur(int cur, int sum) {
+        if(sum > N) return;
+
+        if (sum == N) {
             cnt++;
 
-            if(cnt == K){
-                String str="";
-                for(int i=0; i<N; i++){
-                    if(arr[i]!=0) str += arr[i]+"+";
+            if (cnt == K) {
+                sb.setLength(0);
+                for (int i = 0; i < cur; i++) {
+                    sb.append(arr[i]);
+                    if (i < cur - 1) {
+                        sb.append("+");
+                    }
                 }
-                answer = str.substring(0, str.length()-1);
             }
 
             return;
         }
 
-        if(depth == N){
-            return;
-        }
-
-        for(int i=1; i<=3; i++){
-            arr[depth] = i;
+        for (int i = 1; i <= 3; i++) {
+            arr[cur] = i;
             sum += i;
-            dfs(depth+1, sum);
-            sum -= i; // 요게 뽀인트..!
-            arr[depth]=0;
+            recur(cur + 1, sum);
+            arr[cur] = 0;
+            sum -= i;
         }
-
     }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st;
 
+        st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
 
         arr = new int[N];
-        dfs(0, 0);
-        // 사전순인데 어차피 순서대로 탐색하니까 굳이 sort 사용할 필요 없음!!
+        sb.append(-1);
+        recur(0, 0);
 
-       if(answer!=null) System.out.println(answer);
-       else System.out.println(-1);
+        bw.write(String.valueOf(sb));
+        bw.flush();
+        bw.close();
+        br.close();
     }
-
 }
