@@ -1,72 +1,81 @@
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.io.*;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int N;
-	static int[] nums;
-	static int[] operators;
-	static int max = Integer.MIN_VALUE;
-	static int min = Integer.MAX_VALUE;
-	
-	
-	public static void perm(int depth, int result) {
-		
-		if(depth == N) {
-			max = Math.max(max, result);
-			min = Math.min(min, result);
-			
-			return;
-		}
-		
-		for(int i=0 ; i<4; i++) {
-			if(operators[i] != 0) {
-				operators[i]--;
-				
-				if(i==0) {
-					// 덧셈
-					perm(depth+1, result + nums[depth]);
-				}else if(i==1) {
-					// 뺄셈
-					perm(depth+1, result - nums[depth]);
-				}else if(i==2) {
-					// 곱셈
-					perm(depth+1, result * nums[depth]);
-				}else {
-					// 나눗셈
-					perm(depth+1, result / nums[depth]);
-				}
-				
-				operators[i]++;
-			}
-		}
-	}
-	
-	
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		
-		N = Integer.parseInt(br.readLine());
-		
-		nums = new int[N];
-		st = new StringTokenizer(br.readLine());
-		for(int i=0; i<N; i++) {
-			nums[i] = Integer.parseInt(st.nextToken());
-		}
-		
-		operators = new int[4]; // +, -, *, /
-		st = new StringTokenizer(br.readLine());
-		for(int i=0; i<4; i++) {
-			operators[i] = Integer.parseInt(st.nextToken());
-		}
-		
-		perm(1, nums[0]);
-		System.out.println(max);
-		System.out.println(min);
-	}
+    static int N;
+    static int[] arr;
+    static char[] cals;
+    static boolean[] visited;
+    static int[] selected;
+    static int max = -1000000000, min = 1000000000;
 
+    static void recur(int cur) {
+        if (cur == N - 1) {
+            char sign;
+            int num = arr[0];
+            for (int i = 0; i < N - 1; i++) {
+                sign = cals[selected[i]];
+                if (sign == '+') {
+                    num += arr[i + 1];
+                } else if (sign == '-') {
+                    num -= arr[i + 1];
+                } else if (sign == '*') {
+                    num *= arr[i + 1];
+                } else {
+                    num /= arr[i + 1];
+                }
+            }
+
+            max = Math.max(num, max);
+            min = Math.min(num, min);
+            return;
+        }
+
+        for (int i = 0; i < N - 1; i++) {
+            if(visited[i]) continue;
+            visited[i] = true;
+            selected[cur] = i;
+            recur(cur + 1);
+            visited[i] = false;
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st;
+
+        N = Integer.parseInt(br.readLine());
+
+        st = new StringTokenizer(br.readLine());
+        arr = new int[N];
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        st = new StringTokenizer(br.readLine());
+        int cnt;
+        char ch;
+        cals = new char[N - 1];
+        for (int i = 0, j = 0; i < 4; i++) {
+            cnt = Integer.parseInt(st.nextToken());
+            if (i == 0) ch = '+';
+            else if (i == 1) ch = '-';
+            else if (i == 2) ch = '*';
+            else ch = '/';
+
+            while (cnt-- > 0) {
+                cals[j++] = ch;
+            }
+        }
+
+        visited = new boolean[N - 1];
+        selected = new int[N - 1];
+        recur(0);
+
+        bw.write(String.valueOf(max + "\n" + min));
+        bw.flush();
+        bw.close();
+        br.close();
+    }
 }
