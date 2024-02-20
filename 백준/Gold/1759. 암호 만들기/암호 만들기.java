@@ -1,55 +1,68 @@
-
 import java.io.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.StringTokenizer;
 
 public class Main {
     static int L, C;
-    static char[] chars;
-    static char[] ans;
+    static String[] chars;
+    static String[] selected;
     static StringBuilder sb = new StringBuilder();
 
-    static void comb(int depth, int start, int coCnt, int voCnt){
+    static boolean check() {
 
-        if (depth >= 2) {
-            if(ans[depth-2] >= ans[depth-1]) return;
+        int cnt = 0; // 모음 개수
+        for (int i = 0; i < L; i++) {
+            if (selected[i].equals("a") || selected[i].equals("e") || selected[i].equals("i")
+                    || selected[i].equals("o") || selected[i].equals("u")) {
+                cnt++;
+            }
         }
 
-        if(depth == L){
-//            sb.append(new String(ans));
-            if(coCnt>=2 && voCnt >=1) sb.append(String.valueOf(ans)+"\n");
+        if(cnt < 1) return false;
+        if (L - cnt < 2) return false;
+
+        return true;
+    }
+
+    static void recur(int cur, int start) {
+        if (cur == L) {
+            if (check()) {
+                for (String aChar : selected) {
+                    sb.append(aChar);
+                }
+                sb.append("\n");
+            }
             return;
         }
 
-        for(int i=start; i<C; i++){
-            char c  = chars[i];
-            ans[depth] = c;
-            if(c!='a' && c!='e'&& c!='i' && c!='o' && c!='u') {
-                comb(depth+1, start+1, coCnt+1, voCnt);
-            }else {
-                comb(depth+1, start+1, coCnt, voCnt+1);
-            }
+        for (int i = start; i < C; i++) {
+            selected[cur] = chars[i];
+            recur(cur + 1, i + 1);
         }
     }
 
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st;
 
         st = new StringTokenizer(br.readLine());
         L = Integer.parseInt(st.nextToken());
         C = Integer.parseInt(st.nextToken());
 
-        // a e i o u
-        chars = new char[C];
-        String str = br.readLine().replace(" ","");
-        chars = str.toCharArray();
-
-        ans = new char[L];
+        chars = new String[C];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < C; i++) {
+            chars[i] = st.nextToken();
+        }
         Arrays.sort(chars);
-        comb(0,0, 0,0);
 
-        System.out.println(sb);
+        selected = new String[L];
+        recur(0, 0);
+
+        bw.write(String.valueOf(sb));
+        bw.flush();
+        bw.close();
+        br.close();
     }
-
 }
