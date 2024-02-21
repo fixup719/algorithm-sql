@@ -1,185 +1,137 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
-	static int N,M; // 사무실 크기 N*M
-	static int[][] room; // 사무실
-	static ArrayList<int[]> cctvs = new ArrayList<>(); // CCTV 정보 
-	static int[] cases; // 경우의 수 담을 것 
-	static int safeZone; // 안전 구역(0개수)
-	static int[] delR = {-1,1,0,0}; // 행 방향, 상하좌우
-	static int[] delC = {0,0,-1,1}; // 열 방향, 상하좌우
-	static boolean[][] visited;// 방문체크
-	static int ans = 64; // 안전구역 
-	
-	/*
-	 CCTV 1번 : 상/하/좌/우
-	 CCTV 2번 : 상하/좌우
-	 CCTV 3번 : 상우/우하/하좌/좌상
-	 CCTV 4번 : 좌상우/상우하/우하좌/하좌상
-	 CCTV 5번 : 상하좌우
-	*/
-	
-	static void duPerm(int depth) {
-		if(depth == cctvs.size()) {
-			// 경우의 수 하나 완성
-			visited = new boolean[N][M];
-			int sumWatch=0;
-			for(int i=0; i<cases.length; i++) {
-				int cctvNo = cctvs.get(i)[0];
-				int row = cctvs.get(i)[1];
-				int col = cctvs.get(i)[2];
-				
-				sumWatch += branchOut(cctvNo, row, col, cases[i]);
-			}
-			ans = Math.min(ans, safeZone-sumWatch);
-			
-			return;
-		}
-		
-		for(int dir=0; dir<4; dir++) {
-			cases[depth] = dir;
-			duPerm(depth+1);
-		}
-		
-	}
-	
-	
-	static int branchOut(int cctvNo, int row, int col, int dir) {
-		
-		int sumWatch = 0;
-		
-		if(cctvNo == 1) {
-			
-			sumWatch = watch(row, col, dir);
-			
-		}else if(cctvNo == 2) {
-			
-			if(dir == 0 || dir == 1) {
-				// 상하
-				sumWatch = watch(row, col, 0) + watch(row, col, 1);
-				
-			}else if(dir == 2 || dir == 3) {
-				// 좌우
-				sumWatch = watch(row, col, 2) + watch(row, col, 3);
-				
-			}
-			
-		}else if(cctvNo == 3) {
-			
-			if(dir==0) {
-				
-				// 상좌
-				sumWatch = watch(row, col, 0) + watch(row, col, 2);
-				
-			}else if(dir==1) {
-				
-				// 하좌
-				sumWatch = watch(row, col, 1) + watch(row, col, 2);
-				
-			}else if(dir==2) {
-				
-				// 상우
-				sumWatch = watch(row, col, 0) + watch(row, col, 3);
-				
-			}else {
-				
-				// 하우
-				sumWatch = watch(row, col, 1) + watch(row, col, 3);
-				
-			}
-			
-		}else if(cctvNo == 4) {
-			
-			if(dir==0) {
-				
-				// 상좌우
-				sumWatch = watch(row, col, 0) + watch(row, col, 2) + watch(row, col, 3);
-				
-			}else if(dir==1) {
-				
-				// 하좌우
-				sumWatch = watch(row, col, 1) + watch(row, col, 2) + watch(row, col, 3);
-				
-			}else if(dir==2) {
-				
-				// 좌상하
-				sumWatch = watch(row, col, 2) + watch(row, col, 0) + watch(row, col, 1);
-				
-			}else {
-				
-				// 우상하
-				sumWatch = watch(row, col, 3) + watch(row, col, 0) + watch(row, col, 1);
-				
-			}
-			
-		}else {
-			sumWatch = watch(row, col, 0) + watch(row, col, 1) + watch(row, col, 2) + watch(row, col, 3);
-		}
-		
-		return sumWatch;
-		
-	}
-	
-	
-	static int watch(int row, int col, int dir) {
-		
-		Queue<int[]> q = new LinkedList<>();
-		q.offer(new int[] {row, col});
-		int sumWatch = 0;
-		
-		while(!q.isEmpty()) {
-			int mrow  = q.peek()[0] + delR[dir];
-			int mcol  = q.poll()[1] + delC[dir];
-			
-			
-			if(mrow < 0 || mcol < 0 || N <= mrow || M <= mcol || room[mrow][mcol] == 6) continue;
-			
-			if(!visited[mrow][mcol] && room[mrow][mcol]==0) {
-				visited[mrow][mcol] = true;
-				sumWatch++;
-				q.offer(new int[] {mrow, mcol});
-			}else q.offer(new int[] {mrow, mcol});	
-		}
-		
-		return sumWatch;
-		
-	}
-	
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
-		
-		// 방크기
-		st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		
-		// 방 정보 입력 받기
-		room = new int[N][M];
-		safeZone = 0;
-		for(int i=0; i<N; i++) {
-			st = new StringTokenizer(br.readLine());
-			for(int j=0; j<M; j++) {
-				int input = Integer.parseInt(st.nextToken());
-				room[i][j] = input;
-				
-				if(input==0) safeZone++;
-				else if(input <= 5) cctvs.add(new int[] {input, i, j});
-			}
-		}
-		
-		cases = new int[cctvs.size()];
-		duPerm(0);
-		
-		System.out.println(ans);
-		
-	}
+    static int N, M; // map 크기
+    static int S; // CCTV 개수
+    static int zero; // 0개수
+    static int[][] map; // 사무실 정보
+    static int[][] copyMap; // 사무실 복사본
+    static ArrayList<CCTV> selected; // CCTV별로 방향을 선택한 경우
+    static int[] delR = {-1, 1, 0 ,0}; // 상하좌우
+    static int[] delC = {0, 0, -1, 1}; // 상하좌우
+    static int[][][] cctvs = {{},
+            {{0}, {1}, {2}, {3}},
+            {{0, 1}, {2, 3}},
+            {{0, 3}, {0, 2}, {1, 3}, {1, 2}},
+            {{0, 2, 3}, {1, 2, 3}, {0, 1, 2}, {0, 1, 3}},
+            {{0, 1, 2, 3}}};
+    static int answer = Integer.MAX_VALUE; // 사각지대 최솟값
 
+    static class CCTV {
+        int no; // CCTV 번호
+        int dir; // CCTV 방향
+        int row; // cctv 좌표 row값
+        int col; // cctv 좌표 col값
+
+        CCTV(int no, int dir, int row, int col) {
+            this.no = no;
+            this.dir = dir;
+            this.row = row;
+            this.col = col;
+        }
+    }
+
+    static void copyMap() {
+        zero = 0;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                copyMap[i][j] = map[i][j];
+                if(copyMap[i][j] == 0) zero++;
+            }
+        }
+    }
+
+    static void updateMap(int no, int dir, int row, int col) {
+        for (int k = 0; k < cctvs[no][dir].length; k++) {
+            Queue<int[]> q = new LinkedList<>();
+            q.offer(new int[]{row, col});
+
+            int crow, ccol, mrow, mcol;
+            while (!q.isEmpty()) {
+                crow = q.peek()[0];
+                ccol = q.poll()[1];
+
+                mrow = crow + delR[cctvs[no][dir][k]];
+                mcol = ccol + delC[cctvs[no][dir][k]];
+
+                if (mrow < 0 || mcol < 0 || N <= mrow || M <= mcol || copyMap[mrow][mcol] == 6) break;
+
+                if (copyMap[mrow][mcol] == 0) {
+                    zero--;
+                    copyMap[mrow][mcol] = -1;
+                    q.offer(new int[]{mrow, mcol});
+                } else {
+                    q.offer(new int[]{mrow, mcol});
+                }
+            }
+        }
+    }
+
+    static  void recur(int cur) {
+        if (cur == S) {
+            copyMap();
+            for (int i = 0; i < S; i++) {
+                updateMap(selected.get(i).no, selected.get(i).dir, selected.get(i).row, selected.get(i).col);
+            }
+            answer = Math.min(zero, answer);
+            return;
+        }
+
+        for (int i = 0; i < 4; i++) {
+            if (i >= 2 && selected.get(cur).no == 2) {
+                selected.get(cur).dir = i % 2;
+            } else if (i >= 1 && selected.get(cur).no == 5) {
+                selected.get(cur).dir = i % 1;
+            } else {
+                selected.get(cur).dir = i;
+            }
+            recur(cur + 1);
+        }
+    }
+
+    static void printMap() {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                System.out.print(copyMap[i][j]+" ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st;
+
+        st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+
+        map = new int[N][M];
+        copyMap = new int[N][M];
+        selected = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < M; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
+
+                if(map[i][j] == 1) selected.add(new CCTV(1, -1, i, j));
+                else if(map[i][j] == 2) selected.add(new CCTV(2, -1, i, j));
+                else if(map[i][j] == 3) selected.add(new CCTV(3, -1, i, j));
+                else if(map[i][j] == 4) selected.add(new CCTV(4, -1, i, j));
+                else if(map[i][j] == 5) selected.add(new CCTV(5, -1, i, j));
+            }
+        }
+        S = selected.size();
+        recur(0);
+
+        bw.write(String.valueOf(answer));
+        bw.flush();
+        bw.close();
+        br.close();
+    }
 }
