@@ -4,41 +4,42 @@ import java.util.StringTokenizer;
 
 public class Main {
     static int L, C;
-    static String[] chars;
-    static String[] selected;
+    static char[] chars;
+    static char[] selected;
+    static int[] value = new int[2];
     static StringBuilder sb = new StringBuilder();
 
-    static boolean check() {
-
-        int cnt = 0; // 모음 개수
-        for (int i = 0; i < L; i++) {
-            if (selected[i].equals("a") || selected[i].equals("e") || selected[i].equals("i")
-                    || selected[i].equals("o") || selected[i].equals("u")) {
-                cnt++;
-            }
+    static void check(char x) {
+        if (x == 'a' || x == 'e' || x == 'i' || x == 'o' || x == 'u') {
+            value[0] = 1;
+            value[1] = 0;
+        } else {
+            value[0] = 0;
+            value[1] = 1;
         }
-
-        if(cnt < 1) return false;
-        if (L - cnt < 2) return false;
-
-        return true;
     }
-
-    static void recur(int cur, int start) {
-        if (cur == L) {
-            if (check()) {
-                for (String aChar : selected) {
-                    sb.append(aChar);
-                }
-                sb.append("\n");
+    static void recur(int cur, int cnt, int v, int c) {
+        if (cnt == L) {
+            if (v < 1 || c < 2) {
+                return;
             }
+
+            for (int i = 0; i < L; i++) {
+                sb.append(selected[i]);
+            }
+            sb.append("\n");
+
             return;
         }
 
-        for (int i = start; i < C; i++) {
-            selected[cur] = chars[i];
-            recur(cur + 1, i + 1);
-        }
+        if (cur == C) return;
+
+        selected[cnt] = chars[cur];
+        check(chars[cur]);
+        recur(cur + 1, cnt + 1, v + value[0], c + value[1]);
+
+        selected[cnt] = 0;
+        recur(cur + 1, cnt, v, c);
     }
 
     public static void main(String[] args) throws IOException {
@@ -50,15 +51,16 @@ public class Main {
         L = Integer.parseInt(st.nextToken());
         C = Integer.parseInt(st.nextToken());
 
-        chars = new String[C];
+        chars = new char[C];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < C; i++) {
-            chars[i] = st.nextToken();
+            chars[i] = st.nextToken().charAt(0);
         }
         Arrays.sort(chars);
 
-        selected = new String[L];
-        recur(0, 0);
+        selected = new char[L];
+
+        recur(0, 0, 0, 0);
 
         bw.write(String.valueOf(sb));
         bw.flush();
