@@ -5,24 +5,22 @@ public class Main {
     static int N, S;
     static int[] arr;
     static int[] selected;
-    static int size, cnt;
+    static int answer;
 
-    static void recur(int cur, int start) {
-        if (cur == size) {
-            int sum = 0;
-            for (int i = 0; i < N; i++) {
-                sum += arr[selected[i]];
-            }
-            if (sum == S) {
-                cnt++;
+    static void recur(int cur, int cnt, int total) {
+        if (cur == N){
+            if (cnt != 0 && total == S){
+                answer++;
             }
             return;
         }
 
-        for (int i = start; i <= N; i++) {
-            selected[cur] = i;
-            recur(cur + 1, i + 1);
-        }
+
+        selected[cnt] = arr[cur];
+        recur(cur + 1, cnt + 1, total + arr[cur]);
+
+        selected[cnt] = 0;
+        recur(cur + 1, cnt, total);
     }
 
     public static void main(String[] args) throws IOException {
@@ -34,20 +32,17 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         S = Integer.parseInt(st.nextToken());
 
+        arr = new int[N];
         st = new StringTokenizer(br.readLine());
-        arr = new int[N + 1];
-        for (int i = 1; i <= N; i++) {
+        for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
         selected = new int[N];
-        for (int i = 1; i <= N; i++) {
-            // 크기가 1~N개인 경우
-            size = i;
-            recur(0, 1);
-        }
 
-        bw.write(String.valueOf(cnt));
+        recur(0,0,0);
+
+        bw.write(String.valueOf(answer));
         bw.flush();
         bw.close();
         br.close();
