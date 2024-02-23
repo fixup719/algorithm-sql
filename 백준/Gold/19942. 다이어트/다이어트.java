@@ -1,7 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -9,11 +7,12 @@ public class Main {
     static int[] standard;
     static int[][] foods;
     static int[] selected;
-    static ArrayList<String> ansFoods = new ArrayList<>();
+    static int[] ansFoods;
     static int answer = Integer.MAX_VALUE;
 
     static void recur(int cur, int cnt) {
         if (cur == N + 1) {
+
 
             int p = 0, f = 0, s = 0, v = 0, c = 0;
             for (int i = 0; i < cnt; i++) {
@@ -30,16 +29,27 @@ public class Main {
 
             if (answer >= c) {
 
-                if (answer > c) {
-                    answer = c;
-                    ansFoods.clear();
+                boolean check = true;
+                if (answer == c) {
+                    for (int i = 0; i < cnt; i++) {
+                        if(selected[i] > ansFoods[i]){
+                            check = false;
+                            break;
+                        }
+                    }
                 }
 
-                String str = "" ;
-                for (int i = 0; i < cnt; i++) {
-                    str += selected[i] + " ";
+                if (check) {
+                    for (int i = 0; i < N; i++) {
+                        if (i < cnt) {
+                            ansFoods[i] = selected[i];
+                        } else {
+                            ansFoods[i] = 0;
+                        }
+                    }
                 }
-                ansFoods.add(str);
+
+                answer = c;
             }
 
 
@@ -75,6 +85,7 @@ public class Main {
         }
 
         selected = new int[N];
+        ansFoods = new int[N];
 
         recur(1, 0);
 
@@ -83,8 +94,14 @@ public class Main {
         } else {
             bw.write(answer + "\n");
 
-            Collections.sort(ansFoods);
-            bw.write(String.valueOf(ansFoods.get(0)));
+            Arrays.sort(ansFoods);
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < N; i++) {
+                if(ansFoods[i] > 0) sb.append(ansFoods[i] + " ");
+            }
+
+            bw.write(String.valueOf(sb));
         }
 
         bw.flush();
