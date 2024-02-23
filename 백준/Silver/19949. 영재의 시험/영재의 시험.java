@@ -1,51 +1,63 @@
-
 import java.io.*;
-import java.util.*;
+import java.util.StringTokenizer;
 
 public class Main {
-    static int[] answer = new int[10];
-    static int[] guess = new int[10];
-    static int cnt = 0;
+    static int[] arr; // 문제의 정답
+    static int[] selected; // 선택한 정답
+    static int answer; // 정답 개수
 
-    static void perm(int depth){
+    static void recur(int cur, int correct) {
+        // cur : 지금까지 선택한 위치
+        // correct : 맞은 개수
+        if (cur == 10) {
 
-        if(depth == 10){
-            boolean dup = false;
-            for(int i=2; i<10; i++){
-                if(guess[i-2] == guess[i-1] && guess[i-1] == guess[i]) {
-                    dup = true;
+            // 맞은 개수가 5개 미만이면 pass
+            if(correct < 5) return;
+
+            // 3개 연속인 답이 있는지 체크
+            boolean check = true;
+            for (int i = 0; i <= 7; i++) {
+                if (selected[i] == selected[i + 1] && selected[i] == selected[i + 2]) {
+                    check = false;
                     break;
                 }
             }
 
-            if(!dup) {
-                int score = 0;
-                for(int i=0; i<10; i++){
-                    if(answer[i] == guess[i]) score++;
-                }
+            // 조건 충족시 카운팅
+            if(check) answer++;
 
-                if(score >=5) cnt++;
-            }
             return;
         }
 
-        for(int i=1; i<=5; i++){
-            guess[depth] = i;
-            perm(depth+1);
+        for (int i = 1; i <= 5; i++) {
+            selected[cur] = i;
+            if (arr[cur] == i) {
+                // 정답이 갖다면 correct + 1
+                recur(cur + 1, correct + 1);
+            } else {
+                // 갖지 않다면 correct
+                recur(cur + 1, correct);
+            }
         }
 
     }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        for(int i=0; i<10; i++){
-            answer[i] = Integer.parseInt(st.nextToken());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        arr = new int[10];
+        for (int i = 0; i < 10; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        perm(0);
-        System.out.println(cnt);
+        selected = new int[10];
+        recur(0,0);
 
+        bw.write(String.valueOf(answer));
+        bw.flush();
+        bw.close();
+        br.close();
     }
 }
