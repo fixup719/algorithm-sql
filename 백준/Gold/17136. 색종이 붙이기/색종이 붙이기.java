@@ -4,29 +4,24 @@ import java.util.StringTokenizer;
 public class Main {
     static int[][] paper = new int[10][10]; // 종이
     static int[] colors = {0, 5, 5, 5, 5, 5}; // 색종이 개수 (인덱스가 변의 길이라 생각)
+    static boolean[][] visited = new boolean[10][10]; // 방문 체크
     static int answer = Integer.MAX_VALUE; // 붙여야하는 색종이 최소 개수
 
     // 색종이를 붙일 수 있는지 체크한다.
     static boolean isAble(int row, int col, int s) {
         // row : 행 위치, col : 열 위치, s: 변 길이
 
+        // 색종이를 붙였을 때 경계를 벗어날 경우 붙일 수 없으므로
+        if (10 < row + s || 10 < col + s) {
+            return false;
+        }
+
         for (int i = row; i < row + s; i++) {
             for (int j = col; j < col + s; j++) {
-                if (!boundaryCheck(i, j) || paper[i][j] == 0) {
-                    // 이미 방문한 곳인지도 체크해야함 ㅠㅠ
+                if (paper[i][j] == 0 || visited[i][j]) {
                     return false;
                 }
             }
-        }
-
-        return true;
-    }
-
-    // 색종이를 붙였을 때 경계를 벗어날 경우 붙일 수 없으므로
-    static boolean boundaryCheck(int row, int col) {
-
-        if (row < 0 || col < 0 || 10 <= row || 10 <= col) {
-            return false;
         }
 
         return true;
@@ -36,7 +31,7 @@ public class Main {
         // count : 필요한 색종이 개수
 
         // 이걸 추가해야 시간초과 안뜬다. => count가 answer보다 커지는 경우는 더 볼 필요도 없음
-        if(count >= answer) return;
+        if(count > answer) return;
 
         if (col == 10) {
             col = 0;
@@ -48,7 +43,7 @@ public class Main {
             return;
         }
 
-        if (paper[row][col] == 1) {
+        if (paper[row][col] == 1 && !visited[row][col]) {
             for (int i = 5; i >= 1; i--) {
                 // 색종이 종류만큼 체크
                 if (0 < colors[i] && isAble(row, col, i)) {
@@ -58,7 +53,7 @@ public class Main {
                     // 색종이를 붙일 수 있다면 방문체크
                     for (int j = row; j < row + i; j++) {
                         for (int k = col; k < col + i; k++) {
-                            paper[j][k] = 0;
+                            visited[j][k] = true;
                         }
                     }
 
@@ -70,7 +65,7 @@ public class Main {
                     // 방문 체크 해제 해주기
                     for (int j = row; j < row + i; j++) {
                         for (int k = col; k < col + i; k++) {
-                            paper[j][k] = 1;
+                            visited[j][k] = false;
                         }
                     }
                 }
