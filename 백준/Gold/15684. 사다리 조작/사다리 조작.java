@@ -1,105 +1,122 @@
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.StringTokenizer;
 
-public class Main{
-	static int[][] map;
-	static int N, H;
-	//	static int[][] deltas = {{0,-1},{0,1},{1,0}};	// 좌, 우, 하
+public class Main {
+    static int N, M, H; // N : 세로선 개수, M : 가로선 개수, H : 세로선마다 가로선 놓을 수 있는 위치 개수
+    static int[][] map; // 사다리 맵
+    static int answer = Integer.MAX_VALUE; // 설치해야할 가로선 최소 개수
+    static boolean check; // 연속됐는지 체크하기위한 변수
 
-	// 자기 자신으로 돌아오는 지 체크하는 메소드
-	private static boolean ladderCheck() {
-		boolean answer = false;
+    // 경계 체크
+    static boolean boundaryCheck(int row, int col) {
+        return 0 <= row && row <= H && 0 <= col && col < N * 2;
+    }
 
-		for(int start=0; start<N; start++) {
-			int row = 0, col = start;
+    // 사다리 타기 진행
+    static boolean onProgress() {
 
-			while(row<H) {
-				if(map[row][col]==1) {
-					col++;
-				}else if(map[row][col]==2) {
-					col--;
-				}
-				row++;
-			}
+        int row, tmpCol;
+        for (int col = 1; col < 2 * N; col += 2) {
+            // 좌우 탐색부터 할 것!
+            row = 1;
+            tmpCol = col;
+            while (row <= H) {
+                if (boundaryCheck(row, tmpCol + 1) && map[row][tmpCol + 1] == 1) {
+                    // 만약 우측 값이 1이라면(가로선이 있다면)
+                    row++;
+                    tmpCol += 2;
+                } else if (boundaryCheck(row, tmpCol - 1) && map[row][tmpCol - 1] == 1) {
+                    // 만약 좌측 값이 1이라면(가로선이 있다면)
+                    row++;
+                    tmpCol -= 2;
+                } else {
+                    // 만약 좌우 가로선이 없다면 아래로
+                    row++;
+                }
+            }
+            if(col != tmpCol) return  false;
+        }
 
-			if(start == col) {
-				answer = true;
-			}else if(start!=col) {
-				answer = false;
-				break;
-			}
-		}
-		return answer;
-	}
+        return true;
+    }
+    static void recur(int row,int col, int total) {
 
-	// 가로선 놓는 메소드 
-	private static void dfs(int cnt, int max) {
+        // 설치한 가로선 개수가 3개보다 많을 경우는 제외 시켜야함(가지치기 용)
+        if (total > 3) return;
 
-		if(cnt==max) {
-			if(ladderCheck()) {
-				System.out.println(max);
-				System.exit(0);
-			}
-			return;
-		}
+        if (col >= N * 2) {
+            col = 2;
+            row++;
+        }
+
+        if (row == H + 1) {
+
+            // i번째에서 출발한게 i번쨰로 도착하는 경우 개수 갱신
+            if(onProgress()){ answer = Math.min(answer, total);}
+
+            return;
+        }
+
+        check = true;
+        // 이미 가로선이 설치된 경우만 빼고 보기
+        if (map[row][col] == 0) {
+
+            // 좌 또는 우에 이미 가로선이 설치되면 안 됨 (연속되면 안되니까)
+            if ((boundaryCheck(row, col - 2) && map[row][col - 2] == 1)) {
+                check = false;
+            }
+            if ((boundaryCheck(row, col + 2) && map[row][col + 2] == 1)) {
+                check = false;
+            }
+
+            if (check) {
+                // 가로선 설치하기
+                map[row][col] = 1;
+                recur(row, col + 2, total + 1);
+
+                // 설치한 거 복원
+                map[row][col] = 0;
+            }
+        }
+
+        // 가로선 설치 안 함
+        recur(row, col + 2, total);
 
 
-		for(int i=0; i<H; i++) {
-			for(int j=0; j<N-1; j++) {
-				// 두 가로선이 서로 연속하거나 접하면 안 된다는 조건 있음
-				if(map[i][j] == 0 &&  map[i][j+1]==0) {
-					map[i][j] = 1;
-					map[i][j+1] = 2;
-					dfs(cnt+1, max);
-					map[i][j] = 0;
-					map[i][j+1] = 0;
-				}
-			}
-		}
-	}
+    }
 
-	public static void main(String[] args) throws Exception {
-		// N : 세로선
-		// M : 가로선
-		// H : 각각의 세로선마다 가로선을 놓을 수 있는 위치 개수
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st;
 
-		// i번 세로선 결과가 i번이 나와야 함
-		// 추가해야하는 가로선 개수 최소값?
-		// 불가능하거나 3보다 큰 값이면 -1 출력
+        st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        H = Integer.parseInt(st.nextToken());
 
-		// N M H
-		// 가로선 정보  a b
-		// b, b+1을 a점 위치에서 연결
+        // 세로선에 1표시 -> 사다리 기둥이니까
+        map = new int[H + 1][2 * N];
+        for (int i = 1; i <= H; i++) {
+            for (int j = 1; j < 2 * N; j += 2) {
+                map[i][j] = 1;
+            }
+        }
 
-		// 초기 0으로 셋팅
-		// 가로선 연결된 점은 1로 셋팅
-		// 처음 1 만나면 1있는 쪽으로 좌우 셋팅
-		// 만약 델타가 0 or 1일경우 상하로 셋팅(2,3)
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
+        // 이미 설치된 가로선 설치
+        int row, col;
+        while (M-- > 0) {
+            st = new StringTokenizer(br.readLine());
+            row = Integer.parseInt(st.nextToken());
+            col = Integer.parseInt(st.nextToken());
+            map[row][col * 2] = 1;
+        }
 
-		st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		int M = Integer.parseInt(st.nextToken());
-		H = Integer.parseInt(st.nextToken());
+        recur(1, 2, 0);
 
-		map = new int[H][N];
-		for(int i=0; i<M; i++) {
-			st = new StringTokenizer(br.readLine());
-			int a = Integer.parseInt(st.nextToken())-1;
-			int b = Integer.parseInt(st.nextToken())-1;
-
-			map[a][b] = 1;
-			map[a][b+1] = 2;
-		}
-
-		// 가로선 수가 3보다 커지면 -1출력
-		for(int i=0; i<=3; i++) {
-			dfs(0,i);
-		}
-		System.out.println(-1);
-
-	}
+        bw.write(String.valueOf(answer == Integer.MAX_VALUE ? -1 : answer));
+        bw.flush();
+        bw.close();
+        br.close();
+    }
 }
