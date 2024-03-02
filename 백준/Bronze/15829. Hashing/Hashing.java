@@ -7,11 +7,14 @@ public class Main {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
         int L = Integer.parseInt(br.readLine());
+        final int MOD = 1234567891;
         String str = br.readLine();
 
-        int sum = 0;
+        long sum = 0;
+        long mul = 1;
         for (int i = 0; i < str.length(); i++) {
-            sum += (str.charAt(i) - 'a' + 1) * Math.pow(31, i) % 1234567891;
+            sum = (sum + ((str.charAt(i) - 'a' + 1) * (mul % MOD)) % MOD) % MOD;
+            mul = (31 * (mul % MOD)) % MOD;
         }
 
         bw.write(String.valueOf(sum));
