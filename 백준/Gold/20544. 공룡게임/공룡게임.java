@@ -17,8 +17,9 @@ public class Main {
 
         if (dp[cur][nearCnt][nearTwoCnt][two] != -1) return dp[cur][nearCnt][nearTwoCnt][two];
 
-        long ret = recur(cur + 1, 0, 0, two) + recur(cur + 1, nearCnt + 1, 0, two) + recur(cur + 1, nearCnt + 1, nearTwoCnt + 1, 1);
-        dp[cur][nearCnt][nearTwoCnt][two] = (int)(ret % 1000000007);
+        dp[cur][nearCnt][nearTwoCnt][two] = (int)((recur(cur + 1, 0, 0, two)
+                + recur(cur + 1, nearCnt + 1, 0, two)
+                + recur(cur + 1, nearCnt + 1, nearTwoCnt + 1, 1)) % 1000000007);
 
         return dp[cur][nearCnt][nearTwoCnt][two];
     }
