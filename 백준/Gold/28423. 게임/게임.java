@@ -25,7 +25,6 @@ public class Main {
         else if (Integer.parseInt("" + sum1 + sum2) >= 100000) return -1;
 
         if (visited[Integer.parseInt("" + sum1 + sum2)]) return 0;
-        visited[Integer.parseInt("" + sum1 + sum2)] = true;
 
         return  g("" + sum1 + sum2);
     }
