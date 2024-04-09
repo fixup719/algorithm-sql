@@ -2,78 +2,73 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static final int DIVIDE_NUM = 1_000_000_007;
     static int N;
-    static ArrayList<Integer>[] list;
-    static long[] arr;
-    static long[] subSize;
-    static final int MOD = 1000000007;
+    static Integer[] arr;
+    static long[] size;
+    static List<Long> ans;
+    static List<Integer>[] list;
 
-    static void dfs(int cur, int prv) {
-        subSize[cur] = 1;
-
-        for (Integer nxt : list[cur]) {
-            if (nxt == prv) continue;
-
-            dfs(nxt, cur);
-            subSize[cur] += subSize[nxt];
-        }
-    }
-
-    public static void main(String[] args) throws  IOException{
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
 
         N = Integer.parseInt(br.readLine());
 
-        list = new ArrayList[N + 1];
-        for (int i = 0; i < N + 1; i++) {
+        size = new long[N+1];
+        arr = new Integer[N-1];
+        ans = new ArrayList<>();
+        list = new ArrayList[N+1];
+
+        for(int i = 1 ; i <= N ; i ++){
             list[i] = new ArrayList<>();
         }
 
-        int node1, node2;
-        for (int i = 0; i < N - 1; i++) {
+        for(int i = 0 ; i < N-1 ; i ++){
             st = new StringTokenizer(br.readLine());
-            node1 = Integer.parseInt(st.nextToken());
-            node2 = Integer.parseInt(st.nextToken());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
 
-            list[node1].add(node2);
-            list[node2].add(node1);
+            list[a].add(b);
+            list[b].add(a);
         }
 
         st = new StringTokenizer(br.readLine());
-        arr = new long[N - 1];
-        for (int i = 0; i < N - 1; i++) {
+        for(int i = 0 ; i < N-1 ; i ++)
             arr[i] = Integer.parseInt(st.nextToken());
-        }
-        Arrays.sort(arr);
 
-        subSize = new long[N + 1];
-        dfs(1, 0);
+        dfs(1, -1);
 
-        for (int i = 0; i < N + 1; i++) {
-            subSize[i] = subSize[i] * (N - subSize[i]);
-        }
-        Arrays.sort(subSize);
+        Collections.sort(ans);
+        Arrays.sort(arr, Collections.reverseOrder());
 
-        long sum = 0;
-        for (int i = 0, j = N; i < N - 1 ; i++, j--) {
-            sum += (arr[i] * subSize[j]) % MOD;
+        long res = 0;
+        for(int i = 0 ; i < N-1 ; i ++){
+            res += (arr[i] * ans.get(i)) % DIVIDE_NUM;
         }
 
-        /*
-        1
-        | \
-        2  5
-        | \
-        3  4
+//        System.out.println(Arrays.toString(size));
+//        for (int i = 0; i < ans.size(); i++) {
+//            System.out.print(ans.get(i) + " ");
+//        }
+//        System.out.println();
+//
+//        System.out.println(Arrays.toString(arr));
 
-        3*2  1*4  1*4  1*4
-        * */
+        System.out.println(res % DIVIDE_NUM);
+    }
 
-        bw.write(String.valueOf(sum % MOD));
-        bw.flush();
-        bw.close();
-        br.close();
+    private static void dfs(int cur, int prev) {
+        size[cur] = 1;
+
+        for(int next: list[cur]){
+            if(next == prev) continue;
+
+            dfs(next, cur);
+
+            size[cur] += size[next];
+            ans.add((size[next] * (N -  size[next])));
+        }
     }
 }
