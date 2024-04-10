@@ -6,7 +6,7 @@ public class Main {
     static ArrayList<Node>[] list;
     static int[] parent;
     static int root;
-    static long[] hinge;
+    static int[] hinge;
 
     static class Node {
         int no;
@@ -33,7 +33,7 @@ public class Main {
     }
 
     // unladen load 구하기
-    static long getLoad(int node, long sum) {
+    static int getLoad(int node, int sum) {
         sum += hinge[node];
 
         if (node == root) return sum;
@@ -72,10 +72,10 @@ public class Main {
             }
         }
 
-        hinge = new long[N + 1];
+        hinge = new int[N + 1];
         getHinge(root, 0, 0);
 
-        long max = 0;
+        int max = 0;
         for (int i = 1; i <= N; i++) {
             max = Math.max(getLoad(i, 0), max);
         }
