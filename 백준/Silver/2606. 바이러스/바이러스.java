@@ -1,50 +1,55 @@
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-    static int N, E;
-    static int[][] arr;
-    static boolean[] visited;
-    static int cnt;
+    static int N, M;
+    static int[] parent;
+    static int[] size;
 
-    static void dfs(int node) {
-        visited[node] = true;
-
-        for (int i = 1; i <= N; i++) {
-
-            if (visited[i]) continue;
-
-            if (arr[node][i] == 1 && arr[i][node] == 1) {
-                cnt++;
-                dfs(i);
-            }
+    static int find(int x) {
+        if (parent[x] == x) {
+            return x;
+        } else {
+            parent[x] = find(parent[x]);
+            return parent[x];
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    static void union(int a, int b) {
+        a = find(a);
+        b = find(b);
+
+        if (a == b) return;
+
+        parent[b] = a;
+        size[a] += size[b];
+    }
+
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st;
 
         N = Integer.parseInt(br.readLine());
-        E = Integer.parseInt(br.readLine());
+        M = Integer.parseInt(br.readLine());
 
-        arr = new int[N + 10][N + 10];
-        int node1, node2;
-        for (int i = 0; i < E; i++) {
+        parent = new int[110];
+        for (int i = 0; i < 110; i++) {
+            parent[i] = i;
+        }
+        size = new int[110];
+        Arrays.fill(size, 1);
+
+        int a, b;
+        for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-            node1 = Integer.parseInt(st.nextToken());
-            node2 = Integer.parseInt(st.nextToken());
+            a = Integer.parseInt(st.nextToken());
+            b = Integer.parseInt(st.nextToken());
 
-            arr[node1][node2] = 1;
-            arr[node2][node1] = 1;
+            union(a, b);
         }
 
-        visited = new boolean[N + 1];
-
-        dfs(1);
-
-        bw.write(String.valueOf(cnt));
+        bw.write(String.valueOf(size[find(1)] - 1));
         bw.flush();
         bw.close();
         br.close();
