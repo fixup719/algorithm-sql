@@ -1,26 +1,30 @@
 import java.io.*;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-    static int N, M, K;
-    static int[] cost;
-    static int[][] relation;
-    static boolean[] visited;
-    static int min;
+    static int N, M, K;  // 학생 수 N, 친구 관계 수 M, 가지고 있는 돈 K
+    static int[] money; // 친구비
+    static int[] parent;
 
-    static void dfs(int node) {
-        visited[node] = true;
-        min = Math.min(min, cost[node]);
-
-        for (int i = 1; i <= N; i++) {
-            if (visited[i] || relation[node][i] != 1) continue;
-
-            dfs(i);
+    static int find(int x) {
+        if (parent[x] == x) {
+            return x;
+        } else {
+            parent[x] = find(parent[x]);
+            return parent[x];
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    static void union(int a, int b) {
+        a = find(a);
+        b = find(b);
+
+        if (a == b) return;
+
+        parent[b] = a;
+    }
+
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st;
@@ -30,35 +34,46 @@ public class Main {
         M = Integer.parseInt(st.nextToken());
         K = Integer.parseInt(st.nextToken());
 
-        cost = new int[N + 1];
-        st = new StringTokenizer(br.readLine());
-        for (int i = 1; i <= N; i++) {
-            cost[i] = Integer.parseInt(st.nextToken());
+        money = new int[N + 1];
+        parent = new int[N + 1];
+        for (int i = 0; i < N + 1; i++) {
+            parent[i] = i;
         }
 
-        relation = new int[N + 1][N + 1];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 1; i <= N; i++) {
+            money[i] = Integer.parseInt(st.nextToken());
+        }
+
         int a, b;
-        for (int i = 0; i < M; i++) {
+        while (M-- > 0) {
             st = new StringTokenizer(br.readLine());
             a = Integer.parseInt(st.nextToken());
             b = Integer.parseInt(st.nextToken());
 
-            relation[a][b] = 1;
-            relation[b][a] = 1;
+            union(a, b);
         }
 
-        visited = new boolean[N + 1];
-        int total = 0;
+        int p, answer = 0;
+        int[] cost = new int[N + 1];
+        Arrays.fill(cost, 1 << 30);
         for (int i = 1; i <= N; i++) {
-            if (!visited[i]) {
-                min = 1 << 30;
-                dfs(i);
-                total += min;
+            p = find(i);
+            cost[p] = Math.min(cost[p], money[i]);
+        }
+
+        for (int i = 1; i <= N ; i++) {
+            if (cost[i] != 1 << 30) {
+                answer += cost[i];
             }
         }
 
-        if (total <= K) bw.write(String.valueOf(total));
-        else bw.write("Oh no");
+        if (answer > K) {
+            bw.write("Oh no");
+        } else {
+            bw.write(String.valueOf(answer));
+        }
+        bw.flush();
         bw.close();
         br.close();
     }
