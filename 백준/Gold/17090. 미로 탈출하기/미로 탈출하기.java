@@ -13,30 +13,36 @@ public class Main {
     }
     static int backtracking(int row, int col) {
 
+        // 경계를 벗어나면 return 1
         if (!check(row,col)) return 1;
 
+        // 이미 방문한 곳을 또 방문하면 return 0 -> 무한루프 방지
         if (visited[row][col]) return 0;
 
+        // 방문 체크
         visited[row][col] = true;
 
+        // 이미 메모되어 있는 경우에는 기록된거 가져오기
         if (dp[row][col] != -1){
+            // 방문 체크 해제 -> 복원
             visited[row][col] = false;
             return dp[row][col];
         }
 
-
+        // 이동
         int mrow = row, mcol = col;
         if (map[row][col] == 'U')  mrow--;
         else if (map[row][col] == 'R') mcol++;
         else if (map[row][col] == 'D') mrow++;
         else mcol--;
 
-        int ret = 0;
+        // 재귀 결과값 담기 (1이면 탈출한 거)
+        int ret = backtracking(mrow, mcol);
 
-        ret += backtracking(mrow, mcol);
-
+        // 방문 체크 해제 -> 복원
         visited[row][col] = false;
 
+        // 기록
         dp[row][col] = ret;
         return dp[row][col];
     }
@@ -71,11 +77,8 @@ public class Main {
         int tmp;
         for (int i = 1; i <= N; i++) {
             for (int j = 1; j <= M; j++) {
+                // 출발지마다 돌리기..
                 answer += backtracking(i, j);
-
-//                for (boolean[] booleans : visited) {
-//                    Arrays.fill(booleans, false);
-//                }
             }
         }
 
