@@ -16,7 +16,7 @@ public class Main {
     static int[] horseDelC = {-2, -1, 1, 2, -2, -1, 1, 2};
 
     static boolean check(int row, int col, int horseMoveCnt) {
-        return 0 <= row && 0 <= col && row < H && col < W && map[row][col] == 0 && !visited[row][col][horseMoveCnt];
+        return 0 <= row && 0 <= col && row < H && col < W && map[row][col] == 0 && !visited[horseMoveCnt][row][col];
     }
 
     static class Node {
@@ -58,7 +58,7 @@ public class Main {
 
                         if (!check(mrow, mcol, horseMoveCnt + 1)) continue;
 
-                        visited[mrow][mcol][horseMoveCnt + 1] = true;
+                        visited[horseMoveCnt + 1][mrow][mcol] = true;
                         q.offer(new Node(mrow, mcol, horseMoveCnt + 1));
                     }
                 }
@@ -70,7 +70,7 @@ public class Main {
 
                     if (!check(mrow, mcol, horseMoveCnt)) continue;
 
-                    visited[mrow][mcol][horseMoveCnt] = true;
+                    visited[horseMoveCnt][mrow][mcol] = true;
                     q.offer(new Node(mrow, mcol, horseMoveCnt));
                 }
             }
@@ -101,7 +101,7 @@ public class Main {
             }
         }
 
-        visited = new boolean[H][W][31];
+        visited = new boolean[31][H][W];
 
         System.out.println(bfs(0, 0));
 
