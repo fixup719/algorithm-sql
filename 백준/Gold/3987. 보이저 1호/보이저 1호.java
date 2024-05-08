@@ -57,10 +57,7 @@ public class Main {
             } else if (map[mr][mc] == '/') {
                 CD = CD % 2 == 0 ? CD + 1 : CD - 1;
             } else {
-                if (CD == 0) CD += 3;
-                else if (CD == 3) CD -= 3;
-                else if (CD == 1) CD += 1;
-                else CD -= 1;
+                CD = 3 - CD;
             }
 
             time++;
