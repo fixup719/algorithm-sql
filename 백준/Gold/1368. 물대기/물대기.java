@@ -22,8 +22,7 @@ public class Main {
 
         if (a == b) return;
 
-        if (cost[a] < cost[b]) parent[b] = a;
-        else parent[a] = b;
+        parent[b] = a;
     }
 
     public static void main(String[] args) throws IOException {
