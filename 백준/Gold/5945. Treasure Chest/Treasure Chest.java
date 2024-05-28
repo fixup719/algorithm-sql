@@ -16,14 +16,18 @@ public class Main {
 
         // 각 플레이어는 매 턴에서 최선의 선택을 하게 된다....
 
-        int ret = 0;
+        int ret;
 
         if (order == 0) {
             // A차례
-            ret = Math.max(recur(1, start, end - 1) + arr[end], recur(1, start + 1, end) + arr[start]);
+            ret = 0;
+            ret = Math.max(ret, recur(1, start + 1, end) + arr[start]);
+            ret = Math.max(ret, recur(1, start, end - 1) + arr[end]);
         } else {
             // B차례
-            ret = Math.min(recur( 0, start, end - 1), recur(0, start + 1, end));
+            ret = 1 << 30;
+            ret = Math.min(ret, recur(0, start + 1, end));
+            ret = Math.min(ret, recur( 0, start, end - 1));
         }
 
         dp[order][start][end] = ret;
