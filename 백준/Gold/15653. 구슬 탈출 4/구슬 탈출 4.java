@@ -49,12 +49,6 @@ public class Main {
 
                         if (redStop && blueStop) break;
 
-                        // 둘이 같은 칸에도 안 됨
-                        if (mRedRow == mBlueRow && mRedCol == mBlueCol) {
-                            redStop = true;
-                            blueStop = true;
-                        }
-
                         // 파란공 또는 빨간공은 벽이나 장애물을 만나면 이동 X
                         if (board[mBlueRow][mBlueCol] == '#') {
                             mBlueRow -= delR[dir];
