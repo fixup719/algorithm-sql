@@ -23,7 +23,7 @@ public class Main {
 
         dp[cur][prv] = ret;
 
-        return ret % MOD;
+        return ret;
     }
 
     public static void main(String[] args) throws IOException {
