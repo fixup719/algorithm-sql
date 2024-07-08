@@ -4,7 +4,6 @@ import java.util.*;
 public class Main {
     static int N, M;
     static int[] team;
-    static ArrayList<Integer>[] lstF;
     static ArrayList<Integer>[] lstE;
 
     static int find(int x) {
@@ -35,10 +34,8 @@ public class Main {
             team[i] = i;
         }
 
-        lstF = new ArrayList[N + 1];
         lstE = new ArrayList[N + 1];
         for (int i = 0; i < N + 1; i++) {
-            lstF[i] = new ArrayList<>();
             lstE[i] = new ArrayList<>();
         }
 
@@ -70,9 +67,6 @@ public class Main {
                 // 친구 관계
                 a = Integer.parseInt(st.nextToken());
                 b = Integer.parseInt(st.nextToken());
-                lstF[a].add(b);
-                lstF[b].add(a);
-
                 if (find(a) == find(b)) continue;
                 union(a, b);
             }
