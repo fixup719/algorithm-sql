@@ -4,12 +4,11 @@ import java.util.*;
 
 public class Main {
     static int N;
-    static long[][] arr;
+    static int[][] arr;
 
     static long countSum(long mid) {
-        long max = 0;
-        long sum = 0;
-        long a, b, c;
+        int a, b, c;
+        long max = 0, sum = 0;
         for (int i = 0; i < N; i++) {
             a = arr[i][0]; // 초항
             b = arr[i][1]; // 공차
@@ -24,10 +23,9 @@ public class Main {
         return sum;
     }
     static long binarySearch() {
-        long a, b, c, max, ansNum = -1;
-        long s = 0L, e = Integer.MAX_VALUE + 1L, mid, sum;
+        long s = 0, e = Integer.MAX_VALUE, mid, sum, ansNum = -1;
         while (s <= e) {
-            mid = (s + e) / 2L;
+            mid = (s + e) / 2;
 
             sum = countSum(mid);
 
@@ -51,14 +49,14 @@ public class Main {
 
         N = Integer.parseInt(br.readLine());
 
-        arr = new long[N][3];
+        arr = new int[N][3];
 
-        long a, c, b;
+        int a, c, b;
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            a = Long.parseLong(st.nextToken());
-            c = Long.parseLong(st.nextToken());
-            b = Long.parseLong(st.nextToken());
+            a = Integer.parseInt(st.nextToken());
+            c = Integer.parseInt(st.nextToken());
+            b = Integer.parseInt(st.nextToken());
 
             arr[i][0] = a;
             arr[i][1] = b;
@@ -70,7 +68,17 @@ public class Main {
         if (num == -1L) {
             System.out.println("NOTHING");
         } else {
-            System.out.println(num + " " + (countSum(num) - countSum(num - 1)));
+            int cnt = 0;
+            for (int i = 0; i < N; i++) {
+                a = arr[i][0]; // 초항
+                b = arr[i][1]; // 공차
+                c = arr[i][2]; // 최대 범위
+
+                if (a <= num && num <= c && (num - a) % b == 0) cnt++;
+            }
+
+
+            System.out.println(num + " " + cnt);
         }
 
     }
