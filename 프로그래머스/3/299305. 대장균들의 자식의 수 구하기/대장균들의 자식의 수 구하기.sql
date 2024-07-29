@@ -1,0 +1,5 @@
+-- 요약 : 대장균 개체 id와 자식의 수 출력
+-- 접근법 : 서브쿼리
+SELECT ID, (SELECT COUNT(*) FROM ECOLI_DATA C WHERE P.ID = C.PARENT_ID) AS 'CHILD_COUNT'
+FROM ECOLI_DATA P
+ORDER BY P.ID;
