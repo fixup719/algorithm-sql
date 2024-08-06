@@ -43,8 +43,8 @@ public class Main {
 
                 if (dist[nxt] > nc) {
                     dist[nxt] = nc;
+                    pq.offer(new Node(nxt, dist[nxt]));
                 }
-                pq.offer(new Node(nxt, dist[nxt]));
             }
         }
     }
