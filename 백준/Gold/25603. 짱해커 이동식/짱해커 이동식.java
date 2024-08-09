@@ -3,7 +3,6 @@ import java.util.*;
 
 public class Main {
     static int N, K, max;
-    static Set<Integer> set = new TreeSet<>();
     static int[] arr;
 
     static int binarySearch() {
@@ -24,7 +23,7 @@ public class Main {
             if (cnt >= K) {
                 s = mid + 1;
             } else {
-                if (set.contains(mid)) ans = Math.min(ans, mid);
+                ans = Math.min(ans, mid);
                 e = mid - 1;
             }
         }
@@ -45,7 +44,6 @@ public class Main {
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
             max = Math.max(max, arr[i]);
-            set.add(arr[i]);
         }
 
         int ans = binarySearch();
