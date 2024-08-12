@@ -55,15 +55,11 @@ public class Main {
             }
         } catch (Exception e) {}
 
-        if (a == -1) {
-            System.out.println(0);
-        } else {
-            dfs(1, 0, 0);
-            max = 0;
-            dfs(maxNode, 0, 0);
+        dfs(1, 0, 0);
+        max = 0;
+        dfs(maxNode, 0, 0);
 
-            System.out.println(max);
-        }
+        System.out.println(max);
 
 
     }
