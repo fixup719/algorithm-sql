@@ -73,12 +73,10 @@ public class Main {
                     sum += trie.search(lst[i]);
                 }
 
-
                 sb.append(String.format("%.2f", (sum / N))).append("\n");
             }
-        } catch (Exception e) {}
-
-        System.out.println(sb);
-
+        } catch (Exception e) {
+            System.out.println(sb);
+        }
     }
 }
