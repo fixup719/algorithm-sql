@@ -37,7 +37,7 @@ public class Main {
 
         // 부모 노드로 이동
         visited[cur] = true;
-        if (!visited[parent[cur]] && !visited[last]) ret += search(parent[cur]) + 1;
+        if (!visited[last]) ret += search(parent[cur]) + 1;
 
         return ret;
     }
