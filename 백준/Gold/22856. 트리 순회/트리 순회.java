@@ -21,8 +21,6 @@ public class Main {
 
     static public int search(int cur) {
 
-        if (cur == last && visited[last]) return 0;
-
         int ret = 0;
 
         if (tree[cur].leftNode != -1 && !visited[tree[cur].leftNode]) {
