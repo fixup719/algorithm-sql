@@ -11,19 +11,16 @@ public class Main {
             arr[i] = Integer.parseInt(br.readLine());
         }
 
-        Stack<Integer> stack = new Stack<>();
         long answer = 0;
-        int max = 0;
-        for (int i = 0; i < N; i++) {
-            if (!stack.isEmpty()) {
-                if (stack.peek() >= arr[i]) {
-                    answer += stack.peek() - arr[i];
-                } else {
-                    if (max < arr[i]) answer += arr[i] - max;
-                    stack.pop();
-                }
-            }
-            stack.push(arr[i]);
+        int max = arr[0];
+        int prv = arr[0];
+        for (int i = 1; i < N; i++) {
+             if (prv >= arr[i]) {
+                answer += prv - arr[i];
+             } else {
+                if (max < arr[i]) answer += arr[i] - max;
+             }
+            prv = arr[i];
             max = Math.max(max, arr[i]);
         }
         System.out.println(answer);
