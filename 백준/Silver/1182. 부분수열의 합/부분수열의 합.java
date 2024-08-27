@@ -4,7 +4,6 @@ import java.util.StringTokenizer;
 public class Main {
     static int N, S;
     static int[] arr;
-    static int[] selected;
     static int answer;
 
     static void recur(int cur, int cnt, int total) {
@@ -15,11 +14,7 @@ public class Main {
             return;
         }
 
-
-        selected[cnt] = arr[cur];
         recur(cur + 1, cnt + 1, total + arr[cur]);
-
-        selected[cnt] = 0;
         recur(cur + 1, cnt, total);
     }
 
@@ -37,8 +32,6 @@ public class Main {
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
-
-        selected = new int[N];
 
         recur(0,0,0);
 
