@@ -22,24 +22,15 @@ public class Main {
 
         // 대각선을 이을 때, 정점과 정점을 잇는 가장 작은 사각형 개수 찾기
         int boxCnt = getGCD(x, y);
-        // 작은 사각형의 끝 정점(대각선을 이을 때 최초로 만나는 정점)
-        int mx = x / boxCnt;
-        int my = y - (y / boxCnt);
-        // 직선그래프 기울기
-        double a = - ((double)y / x);
-        // 직선 그래프 y절편
-        int b = y;
 
-        // 작은 사각형에서 대각선이 지나는 사각형 개수 구하기
-        int sum = 0; double ty, py = y - 1;
-        for (int tx = 1; tx <= mx; tx++) {
-            ty = a * tx + b;
-            sum += (int) py - (int) ty + 1;
-            py = ty;
-        }
-
-
-        System.out.println(sum * boxCnt);
+        // 작은 사각형에서 대각선이 지나는 타일 개수 구하기
+        // 작은사각형의 크기 x, y로 갱신
+        y /= boxCnt;
+        x /= boxCnt;
+        // 대각선을 그었을 때
+        // 가로선은 y-1개만큼, 세로선은 x-1개만큼 지난다
+        // 따라서 대각선이 지나는 타일 개수는 x-1 + y-1 + 1이 된다.
+        System.out.println(boxCnt * (x + y - 1));
 
     }
 }
