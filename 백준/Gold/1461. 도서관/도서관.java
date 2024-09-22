@@ -24,13 +24,13 @@ public class Main {
         while (end < N && pos[start] < 0) {
             // 책 두고 오기
             if (pos[start] < 0 && pos[end] > 0) {
-                answer += Math.max(Math.abs(pos[start]), Math.abs(pos[end - 1])) * 2;
+                answer += Math.abs(pos[start]) * 2;
                 break;
             } else if (end - start + 1 == M) {
-                answer += Math.max(Math.abs(pos[start]), Math.abs(pos[end])) * 2;
+                answer += Math.abs(pos[start]) * 2;
                 start = end + 1;
             } else if (end == N - 1) {
-                answer += Math.max(Math.abs(pos[start]), Math.abs(pos[end])) * 2;
+                answer += Math.abs(pos[start]) * 2;
             }
             end++;
         }
@@ -40,17 +40,14 @@ public class Main {
         while ( 0 <= start && pos[end] > 0) {
             // 책 두고 오기
             if (pos[end] > 0 && pos[start] < 0) {
-                answer += Math.max(Math.abs(pos[end]), Math.abs(pos[start + 1])) * 2;
+                answer += pos[end] * 2;
                 break;
             } else if (end - start + 1 == M) {
-                answer += Math.max(Math.abs(pos[start]), Math.abs(pos[end])) * 2;
+                answer += pos[end] * 2;
                 end = start - 1;
-            } else if (pos[end] < 0) {
-                break;
             } else if (start == 0) {
-                answer += Math.max(Math.abs(pos[start]), Math.abs(pos[end])) * 2;
+                answer += pos[end] * 2;
             }
-
             start--;
         }
 
