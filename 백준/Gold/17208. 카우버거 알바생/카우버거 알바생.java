@@ -6,7 +6,7 @@ public class Main {
     static int[][] order;
     static int[][][] dp = new int[110][310][310];
 
-    // 메모이제이션 안 할 경우 시간복잡도 => 2 ^ (100*300*300)
+    // 메모이제이션 안 할 경우 시간복잡도 => (2 ^ 100) * 300 *300
     static int dfs(int cur, int burger, int potato) {
         if (burger < 0 || potato < 0) return Integer.MIN_VALUE;
         if (cur == N) return 0;
