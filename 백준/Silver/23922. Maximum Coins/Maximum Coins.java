@@ -3,53 +3,31 @@ import java.util.*;
 
 public class Main {
     static int N;
-    static int[][] arr;
-    static boolean[][] visited;
-    static int[] delR = {1, -1};
-    static int[] delC = {1, -1};
-    static int recur(int row, int col) {
-
-        int ret = 0, mr, mc;
-        for (int dir = 0; dir < 2; dir++) {
-            mr = row + delR[dir];
-            mc = col + delC[dir];
-
-            if (mr < 0 || mc < 0 || N <= mr || N <= mc || visited[mr][mc]) continue;
-
-            visited[mr][mc] = true;
-            ret = Math.max(ret, recur(mr, mc) + arr[mr][mc]);
-            visited[mr][mc] = false;
-        }
-
-        return ret;
-    }
+    static long[][] arr;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         int T = Integer.parseInt(br.readLine());
         StringBuilder sb = new StringBuilder();
-        int ret;
+        long ret;
         for (int tc = 1; tc <= T; tc++) {
             sb.append("Case #").append(tc).append(": ");
             N = Integer.parseInt(br.readLine());
-            arr = new int[N][N];
-            visited = new boolean[N][N];
-            for (int i = 0; i < N; i++) {
+            arr = new long[N + 1][N + 1];
+            for (int i = 1; i <= N; i++) {
                 st = new StringTokenizer(br.readLine());
-                for (int j = 0; j < N; j++) {
-                    arr[i][j] = Integer.parseInt(st.nextToken());
+                for (int j = 1; j <= N; j++) {
+                    arr[i][j] = arr[i-1][j-1] + Integer.parseInt(st.nextToken());
                 }
             }
 
             ret = 0;
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                    if (visited[i][j]) continue;
-                    visited[i][j] = true;
-                    ret = Math.max(ret, recur(i, j) + arr[i][j]);
-                    visited[i][j] = false;
-                }
+            for (int row = 1; row <= N; row++) {
+                ret = Math.max(ret, arr[row][N]);
+            }
+            for (int col = 1; col <= N; col++) {
+                ret = Math.max(ret, arr[N][col]);
             }
 
             sb.append(ret).append("\n");
